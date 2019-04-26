@@ -1,0 +1,39 @@
+1- Account creation
+As an UNREGISTERED USER
+I should be able to CREATE AN ACCOUNT
+Because I wanna use the system
+Given I wanna have the right to access the system
+When I create an account
+Then I will receive an email
+INFO:
+The email has to have user name and system address
+
+2- User's Login
+As an UNLOGGED USER
+I should be able to LOGIN into the system
+Because I wanna use the system
+Given I reached Login Page
+When I get logged
+Then I will receive my home page
+INFO:
+Home page there is a "Hello <user>"
+
+3- User's Logout
+As an LOGGED USER
+I should be able to LOGOUT the system
+Because I dont' wanna use the it anymore in this time
+Given I dont need keep the session
+When I click on Logout button
+Then I will receive the system home page
+INFO:
+The system page is accessible for any person
+
+4- Password changing
+As an REGISTERED USER
+I should be able to change my password
+Because I forgot or wanna change it
+Given I need to change it
+When I click on 'Change password' in the Login Page
+Then I will receive an email in my registered email with the directions
+INFO:
+The email has to have a link, valid 24 hours, which points to a new page that the user can change their password.
