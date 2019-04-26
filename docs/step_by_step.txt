@@ -1,0 +1,9 @@
+1- user specification
+2- erd
+3- tech stack
+4- routes
+5- db creation
+6- implement routes
+7- wireframe
+8- implement pages
+9- connect client and server 

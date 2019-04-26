@@ -1,8 +1,9 @@
-database: PostgreSQL
-back-end: Node, Express, CookieXXXX
-front-end: React + Bootstrap
+- Database: PostgreSQL
+- Back-end: Node, Express, CookieXXXX
+- Front-end: React + Bootstrap
 
 CORS: Axios
 email: MailGun
 migration: Knex
 deploy: ???
+test: ???
