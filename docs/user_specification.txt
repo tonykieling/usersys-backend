@@ -71,5 +71,7 @@ INFO:
 The outcome will be shown in Hours and minutes.
 
 Future Features:
-7- Dont care about Change Password Log
-8- Right now, without time control of session expiration
+ 7- Care about Change Password Log
+ 8- Time control of session expiration
+ 9- Remove User
+10- User picture

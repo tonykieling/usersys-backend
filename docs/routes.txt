@@ -1,1 +1,32 @@
-xxx
+- Home page:
+GET '/'
+
+- Create user Page
+GET 'create_user'
+
+- User Creation
+POST '/create_user'
+
+- User Login Page
+GET '/login'
+
+- User Login Action
+POST '/login'
+
+- User Page
+GET '/user'
+
+- Update User Info
+POST '/user:id'
+
+- Changing User Password
+POST '/user/:id'
+
+- User Logout
+POST '/logout'
+
+- Logs Page
+GET '/logs'
+
+- Logs Page Query
+POST '/user:id'
