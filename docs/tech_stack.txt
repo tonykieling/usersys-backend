@@ -1,0 +1,8 @@
+database: PostgreSQL
+back-end: Node, Express, CookieXXXX
+front-end: React + Bootstrap
+
+CORS: Axios
+email: MailGun
+migration: Knex
+deploy: ???
