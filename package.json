@@ -1,0 +1,26 @@
+{
+  "name": "user_project",
+  "version": "1.0.0",
+  "description": "About:  User project will handle with actions related to the user, such as:",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tonykieling/user_project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tonykieling/user_project/issues"
+  },
+  "homepage": "https://github.com/tonykieling/user_project#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
