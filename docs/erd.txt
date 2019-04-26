@@ -1,0 +1,14 @@
+There are 2 tables:
+
+1- User
+id: number
+name: number
+email: string
+password: string
+user_admin: boolean
+
+2- Users' Log
+id: number
+user_id: number
+dt_time_login: dt
+dt_time_logout: dt
