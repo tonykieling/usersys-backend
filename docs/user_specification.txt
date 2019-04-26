@@ -13,7 +13,8 @@ Given I wanna have the right to access the system
 When I create an account
 Then I will receive an email
 INFO:
-The email has to have user name and system address
+The email has to have user name and system address.
+After create the user, system login them automatically.
 
 2- User's Login
 As an UNLOGGED USER

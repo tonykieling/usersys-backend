@@ -1,3 +1,5 @@
+(textual ERD)
+
 There are 2 tables:
 
 1- User

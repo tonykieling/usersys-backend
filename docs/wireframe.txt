@@ -1,0 +1,32 @@
+(textual wireframe)
+
+# HOME has the system name, a link to Create User, a link to Login and a link to an About page.
+
+# Create user Page
+It's a form with the following fields:
+Name:
+Email:
+Password:
+Confirm_paswword:
+
+# Login Page
+It's a form with the following fields:
+Email:
+Password:
+
+# User Page
+It's a form which brings in its fields the user information.
+Name:
+Email:
+User can edit and click a button 'Save Changes'.
+Also, there is a button 'Change Password', which send an email to the user and them need to follow the directions.
+
+# Admin Page
+IF the user is an Admin, it should show:
+Name:
+Email:
+User can edit and click a button 'Save Changes'.
+There is a button 'Change Password', which send an email to the user and them need to follow the directions.
+Also there are:
+- Button to Grant Permission, which opens a box where the Admin should input user information.
+- Button to Logs Page, where the Admin should input the user information which will be queried.
