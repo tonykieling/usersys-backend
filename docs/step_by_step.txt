@@ -1,9 +1,10 @@
-1- user specification
-2- erd
-3- tech stack
-4- routes
-5- implement routes (all information is gonna be in memory, local variables in this stage)
-6- db creation
-7- wireframe
-8- implement pages
-9- connect client and server
+  1. user specification
+  2. erd
+  3. tech stack
+  4. routes
+ 5. implement routes (all information is gonna be in memory, local variables in this stage)
+  server.js
+ 6. db creation
+ 7. wireframe
+ 8. implement pages
+ 9. connect client and server
