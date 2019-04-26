@@ -1,3 +1,10 @@
+Overall specification.
+
+This is a system which takes care about store user (normal and admin) information and provide access to the system.
+It could be used for other systems.
+A normal user basically can only create user, login, logout and change password.
+Admin user can do above and also grant or remove permission for another user.
+
 1- Account creation
 As an UNREGISTERED USER
 I should be able to CREATE AN ACCOUNT
@@ -37,3 +44,45 @@ When I click on 'Change password' in the Login Page
 Then I will receive an email in my registered email with the directions
 INFO:
 The email has to have a link, valid 24 hours, which points to a new page that the user can change their password.
+
+5- Granting Admin Permission
+As an ADMIN
+I should be able to grant another user as admin
+Because that person should be admin
+Given I am inside the system as admin
+When I click on 'Granting Admin Permission' in the Admin's Page
+Then I will query for a user by name or email and click the checkbox to confirm the process
+INFO:
+The process to remove the permission is the same.
+
+6- Checking Logs
+As an ADMIN
+I should be able to check the logs
+Because I wanna see users use of the system
+Given I am inside the system as admin
+When I click on 'Checkin Logs' in the Admin's Page
+Then I will have the option for ALL users or query for a user by name or email, select 
+"1- Last Login"
+"2- Month Login"
+"3- Total Login"
+"4- Select a period (it needs to inform start and finish date)"
+ and click the checkbox to confirm the process
+INFO:
+The outcome will be shown in Hours and minutes.
+
+Future Features:
+7- Dont care about Change Password Log
+8- Right now, without time control of session expiration
+
+There are 2 tables:
+1- User
+id: number
+name: number
+email: string
+user_admin: boolean
+
+2- Users' Log
+id: number
+user_id: number
+dt_time_login: dt
+dt_time_logout: dt
