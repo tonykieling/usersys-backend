@@ -29,7 +29,7 @@ app.use('/asd', (req, res, next) => {
 
 app.get('/asd', (req, res) => {
   console.log('/asd', req.route);
-  res.send(req.body);
+  res.send(req.query.name);
   // res.status(200).send('asd is OK');
 });
 
