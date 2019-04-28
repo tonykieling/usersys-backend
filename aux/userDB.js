@@ -1,8 +1,10 @@
-const randomID = require('./randomGen.js');
 
 const user = {
-  asd: 10,
-  id: randomID()
+  id: "",
+  name: "",
+  email: "",
+  password: "",
+  user_admin: false
 };
 
 module.exports = user;

@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const user = require('./aux/userDB.js');
+const logs = require('./aux/logsDB.js');
+const randomID = require('./aux/randomGen.js');
 
 const app = express();
 const PORT = 3333;
