@@ -52,9 +52,44 @@ const readByEmail = (email) => {
   return false;
 }
 
+
+// it gets the userId searching by their name
+const getUserId = (name) => {
+  const db = userDB;
+  for (let k in db)
+    if(db[k].name.toLocaleLowerCase() === name.toLocaleLowerCase())
+      return(db[k].id);
+
+  return false;
+}
+
+
+// this func updates either name or email's user, only for now
+// the argument choosed was name
+const updateUser = (data) => {
+  const userId = data.userId;
+  const userDbID = getUserId(userId); // it grabs user's db id
+
+  if (userDbID) {
+    const db = userDB;
+    const { name, email } = data.user;
+
+    db[userDbID] = {
+      name,
+      email
+    }
+
+    return ({status: true, message: `User ${db[userDbID].name} has been updated successfully.`});
+  }
+
+  return {status: false, message: `User ${userId} not found.`};
+}
+
+
 module.exports = {
+  createUser,
   readAllUsers,
   readByName,
   readByEmail,
-  createUser,
+  updateUser
 }

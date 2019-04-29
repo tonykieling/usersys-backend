@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { createUser, readAllUsers, readByName, readByEmail } = require('./database/tools/crudUser.js');
+const { createUser, readAllUsers, readByName, readByEmail, updateUser } = require('./database/tools/crudUser.js');
 
 const app = express();
 const PORT = 3333;
@@ -87,7 +87,19 @@ app.get('/user-email/:email', (req, res) => {
 });
 
 
+// it updates the user info, only name or email for now
+// in this route the app HAVE to receive name as params
+// and the data to change in the body
+app.post('/user-update/:name', (req, res) => {
+  const userId = req.params.name;
+  const { name, email } = req.body;
+  const result = updateUser({ userId, user: { name, email } });
 
+  result.status ?
+    res.send(result.message) :
+    res.status(400).send(result.message);
+    
+});
 
 
 
