@@ -29,23 +29,25 @@ const readAllUsers = () => {
 }
 
 
-// query user by name
+// query user by name.
+// It's NOT case sensitive due to the 'toLowerCase' invoked function
 // it returns the name + email OR false, if it doesn't match
 const readByName = (name) => {
   const db = userDB;
   for (let k in db)
-    if (db[k].name === name) return { name: db[k].name, email: db[k].email} ;
+    if (db[k].name.toLowerCase() === name.toLowerCase()) return { name: db[k].name, email: db[k].email} ;
 
   return false;
 }
 
 
 // query user by email
+// It's NOT case sensitive due to the 'toLowerCase' invoked function
 // it returns name + email OR false, if it doesn't match
 const readByEmail = (email) => {
   const db = userDB;
   for (let k in db)
-    if (db[k].email === email) return { name: db[k].name, email: db[k].email} ;
+    if (db[k].email.toLowerCase() === email.toLowerCase()) return { name: db[k].name, email: db[k].email} ;
 
   return false;
 }
