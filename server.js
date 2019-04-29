@@ -1,6 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { createUser, readAllUsers, readByName, readByEmail, updateUser } = require('./database/tools/crudUser.js');
+const { createUser,
+        readAllUsers,
+        readByName,
+        readByEmail,
+        updateUser,
+        deleteUser } = require('./database/tools/crudUser.js');
 
 const app = express();
 const PORT = 3333;
@@ -102,6 +107,18 @@ app.post('/user-update/:name', (req, res) => {
   // res.json(result); // it can return an whole object
 });
 
+
+// it deletes the user
+// in this route the app HAVE to receive name as params
+app.post('/user-delete/:name', (req, res) => {
+  const userId = req.params.name;
+
+  const result = deleteUser(userId);
+
+  result.status ?
+    res.send(result.message) :
+    res.status(400).send(result.message);
+});
 
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

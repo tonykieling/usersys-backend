@@ -91,10 +91,24 @@ const updateUser = (data) => {
 }
 
 
+const deleteUser = (nameUser) => {
+  const userDbID = getUserId(nameUser); // it grabs user's db id
+
+  if (userDbID) {
+    const db = userDB;
+    delete db[userDbID];
+    return ({status: true,
+            message: `User ${nameUser} has been deleted successfully.`});
+  }
+
+  return {status: false, message: `User ${nameUser} not found.`};
+}
+
 module.exports = {
   createUser,
   readAllUsers,
   readByName,
   readByEmail,
-  updateUser
+  updateUser,
+  deleteUser
 }
