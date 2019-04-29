@@ -6,6 +6,7 @@ const { createUser,
         readByEmail,
         updateUser,
         deleteUser } = require('./database/tools/crudUser.js');
+const logs = require('./database/db/logsDB.js');
 
 const app = express();
 const PORT = 3333;
@@ -119,6 +120,13 @@ app.post('/user-delete/:name', (req, res) => {
     res.send(result.message) :
     res.status(400).send(result.message);
 });
+
+
+// check all logs
+app.get('/logs', (req, res) => {
+  console.log('checking all logs');
+  res.json(logs);
+})
 
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
