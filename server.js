@@ -1,9 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-// const user = require('./database/userDB.js');
-// const logs = require('./database/logsDB.js');
-// const randomID = require('./database/randomGen.js');
-const {createUser, readAllUsers, readByName} = require('./database/tools/crudUser.js');
+const { createUser, readAllUsers, readByName, readByEmail } = require('./database/tools/crudUser.js');
 
 const app = express();
 const PORT = 3333;
@@ -31,14 +28,51 @@ app.get('/users', (req, res) => {
 })
 
 
+// it creates the user account
+app.post('/create-user', (req, res) => {
+  const { name, email, password} = req.body;
+
+  const result = createUser({ name: `name`, email: `email`, password: `password` });
+  // const name = req.params.name
+  // const result = readByName(name);
+
+  // if (!result) {
+  //   res.status(400).send(`User ${name} does NOT exist`);
+  //   return;
+  // }
+
+  // res.send(result);
+res.send(result);
+});
+
 // it gets the user by their name
-app.get('/userByName/:name', (req, res) => {
-  const tempName = req.params.name;
-console.log("tempName: ", tempName);
-  res.send(readByName(tempName));
+app.get('/user-name/:name', (req, res) => {
+  const name = req.params.name
+  const result = readByName(name);
 
-})
+  if (!result) {
+    res.status(400).send(`User ${name} does NOT exist`);
+    return;
+  }
 
+  res.send(result);
+
+});
+
+
+// it gets the user by their email
+app.get('/user-email/:email', (req, res) => {
+  const email = req.params.email
+  const result = readByEmail(email);
+
+  if (!result) {
+    res.status(400).send(`User ${email} does NOT exist`);
+    return;
+  }
+
+  res.send(result);
+
+});
 
 
 
