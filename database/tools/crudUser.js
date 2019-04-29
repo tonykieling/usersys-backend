@@ -1,11 +1,13 @@
 const userDB = require('../db/userDB.js');
 const randomID = require('./randomGen.js');
 const logs = require('./crudLogs.js');
+const eventType = require('./eventType.js');
 
 // user register
 // it has to receive name, email and password
 createUser = (newUser) => {
-  const event = "1- Create User"
+  const event = eventType.create_user;
+console.log("eventType= ", event)
 console.log("userDBbefore: ", Object.keys(userDB).length);
     const db = userDB;
     const { name, email, password } = newUser;
