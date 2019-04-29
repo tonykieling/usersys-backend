@@ -1,25 +1,28 @@
 const userDB = require('../db/userDB.js');
 const randomID = require('./randomGen.js');
+const logs = require('./crudLogs.js');
 
 // user register
 // it has to receive name, email and password
-const createUser = (newUser) => {
-  const db = userDB;
-  const { name, email, password } = newUser;
-  const id = randomID();
-
-  db[id] = {
-    id,
-    name,
-    email,
-    password,
-    user_admin: false
-  }
-
-  return (`User ${name} has been created!`);
+createUser = (newUser) => {
+  const event = "1- Create User"
+console.log("userDBbefore: ", Object.keys(userDB).length);
+    const db = userDB;
+    const { name, email, password } = newUser;
+    const id = randomID();
+    db[id] = {
+      id,
+      name,
+      email,
+      password,
+      user_admin: false
+    };
+    logs(id, event);
+    console.log("\n\nuserDBafter: ", Object.keys(userDB).length)
+  return (`User ${name} has been created!`);   
 }
-
-
+  
+  
 // this is a function which returns all user
 const readAllUsers = () => {
   if (!userDB)

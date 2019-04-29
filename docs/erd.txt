@@ -12,5 +12,5 @@ user_admin: boolean
 2- Users' Log
 id: number
 user_id: number
-dt_time_login: dt
-dt_time_logout: dt
+dt_time: dt
+event: string

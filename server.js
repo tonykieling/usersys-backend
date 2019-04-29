@@ -57,14 +57,11 @@ app.get('/users.json', (req, res) => {
 // it creates the user account
 app.post('/create-user', (req, res) => {
   const { name, email, password} = req.body;
-
   if (!name || !email || !password) {
     res.status(400).send("There is something wrong with the arguments!");
     return;
   }
-
   const result = createUser({ name: `${name}`, email: `${email}`, password: `${password}` });
-
   res.send(result);
 });
 
@@ -73,12 +70,10 @@ app.post('/create-user', (req, res) => {
 app.get('/user-name/:name', (req, res) => {
   const name = req.params.name
   const result = readByName(name);
-
   if (!result) {
     res.status(400).send(`User ${name} does NOT exist`);
     return;
   }
-
   res.send(result);
 });
 

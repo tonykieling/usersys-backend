@@ -36,9 +36,9 @@ Then I will receive the system home page
 INFO:
 The system page is accessible for any person
 
-4- Password changing
+4- Data's info changing
 As an REGISTERED USER
-I should be able to change my password
+I should be able to change my data
 Because I forgot or wanna change it
 Given I need to change it
 When I click on 'Change password' in the Login Page

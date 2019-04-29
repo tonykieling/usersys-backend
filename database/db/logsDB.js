@@ -1,9 +1,11 @@
-let logs = {
-  id: "",
-  user_id: "",
-  dt_time_login: "",
-  dt_time_logout: ""
-}
+let logs = [
+  // {
+  // id: "",
+  // user_id: "",
+  // dt_time: "",
+  // event: ""
+  // }
+];
 
 module.exports = logs;
 

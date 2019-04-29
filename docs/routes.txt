@@ -19,7 +19,7 @@ GET '/user'
 - Update User Info
 POST '/user:id'
 
-- Changing User Password
+- Changing User Data
 POST '/user/:id'
 
 - User Logout
