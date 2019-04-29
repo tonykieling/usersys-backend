@@ -29,6 +29,11 @@ app.use( (req, res, next) => {
   next();
 });
 
+
+// ###########
+// USER ROUTES
+// ###########
+
 // middleware specific and only for '/users' route and
 //  it HAVE to be placed before that route
 //  and it HAVE to call next to invoke the route (or another desired mdw)
