@@ -1,4 +1,4 @@
-randomGeneretor = () => {
+module.exports = randomGeneretor = () => {
   const possiblities = "AbCdEfGhIjKlMnOpQrStUvWxYzaBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789" // 62
   let result = "";
   let index = 0;
@@ -9,5 +9,3 @@ randomGeneretor = () => {
   
   return result;
 }
-
-module.exports = randomGeneretor;

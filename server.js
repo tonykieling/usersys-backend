@@ -5,16 +5,18 @@ const { createUser, readAllUsers, readByName, readByEmail } = require('./databas
 const app = express();
 const PORT = 3333;
 
+// without using middleware (placed before them)
 app.get('/', (req, res) => {
   console.log('root directory');
   res.status(200).send('this is root directory');
 });
 
+// middleware
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }));
  
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 app.use( (req, res, next) => {
   console.log('use general- middleware');
@@ -22,10 +24,24 @@ app.use( (req, res, next) => {
   next();
 });
 
+// middleware specific and only for '/users' route and
+//  it HAVE to be placed before that route
+//  and it HAVE to call next to invoke the route (or another desired mdw)
+app.use('/users', (req, res, next) => {
+  console.log('This mdw is only for \'/users\' route!');
+  next();
+});
+
 // it gets all users from the db
 app.get('/users', (req, res) => {
   res.send(readAllUsers());
-})
+});
+
+
+// another way to get data, using res.json
+app.get('/users.json', (req, res) => {
+  res.json(user)
+});
 
 
 // it creates the user account
@@ -54,7 +70,6 @@ app.get('/user-name/:name', (req, res) => {
   }
 
   res.send(result);
-
 });
 
 
@@ -69,17 +84,11 @@ app.get('/user-email/:email', (req, res) => {
   }
 
   res.send(result);
-
 });
 
 
 
-app.get('/users.json', (req, res) => {
-  res.json(user)
-});
 
-
-// console.log(app.locals);
 
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
