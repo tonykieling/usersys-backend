@@ -1,19 +1,33 @@
 const userDB = require('../db/userDB.js');
+const randomID = require('./randomGen.js');
 
+// user register
+// it has to receive name, email and password
 const createUser = (newUser) => {
+  const db = userDB;
   const { name, email, password } = newUser;
-  console.log("name: ", name, " email: ", email, " password: ", password);
-  console.log('inside createUSer');
-  return ('OK123');
+  const id = randomID();
+
+  db[id] = {
+    id,
+    name,
+    email,
+    password,
+    user_admin: false
+  }
+
+  return (`User ${name} has been created!`);
 }
 
-// this is a function wich returns all user
+
+// this is a function which returns all user
 const readAllUsers = () => {
   if (!userDB)
     return ('There is no user registered!');
 
   return (userDB);
 }
+
 
 // query user by name
 // it returns the name + email OR false, if it doesn't match
@@ -24,6 +38,7 @@ const readByName = (name) => {
 
   return false;
 }
+
 
 // query user by email
 // it returns name + email OR false, if it doesn't match

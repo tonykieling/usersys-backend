@@ -32,18 +32,16 @@ app.get('/users', (req, res) => {
 app.post('/create-user', (req, res) => {
   const { name, email, password} = req.body;
 
-  const result = createUser({ name: `name`, email: `email`, password: `password` });
-  // const name = req.params.name
-  // const result = readByName(name);
+  if (!name || !email || !password) {
+    res.status(400).send("There is something wrong with the arguments!");
+    return;
+  }
 
-  // if (!result) {
-  //   res.status(400).send(`User ${name} does NOT exist`);
-  //   return;
-  // }
+  const result = createUser({ name: `${name}`, email: `${email}`, password: `${password}` });
 
-  // res.send(result);
-res.send(result);
+  res.send(result);
 });
+
 
 // it gets the user by their name
 app.get('/user-name/:name', (req, res) => {
@@ -80,28 +78,8 @@ app.get('/users.json', (req, res) => {
   res.json(user)
 });
 
-// app.get('/user/:name', (req, res) => {
-//   const tempUser = user[req.params.name];
-//   console.log('user', tempUser);
-//   res.send(tempUser);
-//   // res.status(200).send('asd is OK');
-// });
 
 // console.log(app.locals);
 
-app.get('/', (req, res, next) => {
-  console.log('GET method', req.method, 'url', req.url);
-  res.status(200).send(`method= ${req.method}, url=${req.url}`);
-});
-
-// app.get('/', (err, req, res, next) => {
-//   console.log('ERROR', err);
-//   res.render('error', { error: err });
-// });
-
-app.post('/asd', (req, res) => {
-  console.log('POST method', req.method, 'url', req.url);
-  res.status(200).send(`method= ${req.method}, url=${req.url}`);
-});
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,4 +1,4 @@
-const randomID = require('./randomGen.js');
+const randomID = require('../tools/randomGen.js');
 
 // const user = { 
 //   id: {
