@@ -40,7 +40,7 @@ app.get('/users', (req, res) => {
 
 // another way to get data, using res.json
 app.get('/users.json', (req, res) => {
-  res.json(user)
+  res.json(user) //it's not working due there is no access to userDB, only crudUSer
 });
 
 
@@ -98,7 +98,8 @@ app.post('/user-update/:name', (req, res) => {
   result.status ?
     res.send(result.message) :
     res.status(400).send(result.message);
-    
+
+  // res.json(result); // it can return an whole object
 });
 
 

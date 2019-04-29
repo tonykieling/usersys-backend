@@ -74,12 +74,17 @@ const updateUser = (data) => {
     const db = userDB;
     const { name, email } = data.user;
 
-    db[userDbID] = {
-      name,
-      email
-    }
+    // this option uses spread operator and changes only the data passed after that
+    db[userDbID] = { ...db[userDbID], name, email } 
+    
+    // the option bellow needs to pass each data, more lines to write down..
+    // db[userDbID].name = name;
+    // db[userDbID].email = email;
 
-    return ({status: true, message: `User ${db[userDbID].name} has been updated successfully.`});
+    return ({status: true,
+            message: `User ${db[userDbID].name} has been updated successfully.`,
+            user: db[userDbID]});
+            // the message also returns the new user data, just in case.
   }
 
   return {status: false, message: `User ${userId} not found.`};
