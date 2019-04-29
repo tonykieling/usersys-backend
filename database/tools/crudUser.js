@@ -33,9 +33,15 @@ const readAllUsers = () => {
 // it returns the name + email OR false, if it doesn't match
 const readByName = (name) => {
   const db = userDB;
-  for (let k in db)
-    if (db[k].name === name) return { name: db[k].name, email: db[k].email} ;
+  // for (let k in db)
+  //   if (db[k].name === name) return { name: db[k].name, email: db[k].email} ;
+// console.log("db: ", db)
+//   db.forEach(user => console.log(`user= ${user.name} - ${user.email}`));
 
+  (db.filter(user => user.name === name)) ?
+    // return { name: user.name, email: user.name} :
+  console.log("result- ", name) :
+console.log('no user')
   return false;
 }
 

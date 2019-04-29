@@ -14,8 +14,8 @@ const num1 = randomID();
 const num2 = randomID();
 const num3 = randomID();
 
-const user = {
-  [num1]: {
+const user = [
+  {
     id: num1,
     name: "Bob",
     email: "bob@email",
@@ -23,7 +23,7 @@ const user = {
     user_admin: false
   },
 
-  [num2]: {
+  {
     id: num2,
     name: "Tony",
     email: "tony@email",
@@ -31,14 +31,14 @@ const user = {
     user_admin: true
   },
 
-  [num3]: {
+  {
     id: num3,
     name: "Sue",
     email: "sue@email",
     password: "passSUE",
     user_admin: false
   }
-};
+];
 
 module.exports = user;
 
