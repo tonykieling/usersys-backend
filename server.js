@@ -5,9 +5,9 @@ const { createUser,
         readByName,
         readByEmail,
         updateUser,
-        deleteUser } = require('./database/tools/crudUser.js');
-const logs = require('./database/db/logsDB.js');
-const { displayAllLogs } = require('./database/tools/crudLogs.js')
+        deleteUser, getUserId } = require('./database/tools/crudUser.js');
+// const logs = require('./database/db/logsDB.js');
+const { displayAllLogs, logPerId } = require('./database/tools/crudLogs.js')
 
 const app = express();
 const PORT = 3333;
@@ -136,5 +136,14 @@ app.get('/logs', (req, res) => {
 app.get('/showLogs', (req, res) => {
   res.json()
 })
+
+app.get('/showLogs-name/:name', (req, res) => {
+// console.log("name is " + req.params.name)  
+  const userId = (getUserId(req.params.name));
+  // console.log(logPerId(userId));
+  res.send(logPerId(userId));
+})
+
+
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

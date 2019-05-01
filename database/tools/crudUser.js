@@ -60,7 +60,8 @@ const readAllUsers = () => {
 const readByName = (name) => {
   const db = userDB;
   for (let k in db)
-    if (db[k].name.toLowerCase() === name.toLowerCase()) return { name: db[k].name, email: db[k].email} ;
+    if (db[k].name.toLowerCase() === name.toLowerCase())
+      return { name: db[k].name, email: db[k].email };
 
   return false;
 }
@@ -80,6 +81,8 @@ const readByEmail = (email) => {
 
 // it gets the userId searching by their name
 const getUserId = (name) => {
+  console.log("getuserID, name: ", name)
+
   const db = userDB;
   for (let k in db)
     if(db[k].name.toLocaleLowerCase() === name.toLocaleLowerCase())
@@ -135,5 +138,6 @@ module.exports = {
   readByName,
   readByEmail,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUserId
 }
