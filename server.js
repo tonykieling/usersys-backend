@@ -7,6 +7,7 @@ const { createUser,
         updateUser,
         deleteUser } = require('./database/tools/crudUser.js');
 const logs = require('./database/db/logsDB.js');
+const { displayAllLogs } = require('./database/tools/crudLogs.js')
 
 const app = express();
 const PORT = 3333;
@@ -56,7 +57,8 @@ app.get('/users.json', (req, res) => {
 
 
 // it creates the user account
-app.post('/create-user', (req, res) => {
+app.post('/user-create', (req, res) => {
+console.log('inside user-create')  
   const { name, email, password} = req.body;
   if (!name || !email || !password) {
     res.status(400).send("There is something wrong with the arguments!");
@@ -125,8 +127,14 @@ app.post('/user-delete/:name', (req, res) => {
 // check all logs
 app.get('/logs', (req, res) => {
   console.log('checking all logs');
-  res.json(logs);
+  // res.json(logs);
+  res.json(displayAllLogs());
 })
 
+
+// get all logs
+app.get('/showLogs', (req, res) => {
+  res.json()
+})
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

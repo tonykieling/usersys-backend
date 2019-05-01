@@ -18,6 +18,15 @@ recordLog = (userId, event) => {
   //   event
   // }]
   console.log(`there is ${logsDB.length} LOG recorded`);
+  return;
 }
 
-module.exports = recordLog;
+displayAllLogs = () => {
+  console.log('inside ALL logs')
+  return logsDB;
+}
+
+module.exports = {
+  recordLog,
+  displayAllLogs
+};

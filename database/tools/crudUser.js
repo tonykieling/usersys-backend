@@ -1,10 +1,30 @@
 const userDB = require('../db/userDB.js');
 const randomID = require('./randomGen.js');
-const logs = require('./crudLogs.js');
+const { recordLog } = require('./crudLogs.js');
 const eventType = require('./eventType.js');
 
 // user register
 // it has to receive name, email and password
+// createUser = (newUser) => {
+//   return new Promise((resolve, reject) => {
+//     const event = eventType.create_user;
+//     console.log("eventType= ", event)
+//     console.log("userDBbefore: ", Object.keys(userDB).length);
+//     const db = userDB;
+//     const { name, email, password } = newUser;
+//     const id = randomID();
+//     db[id] = {
+//       id,
+//       name,
+//       email,
+//       password,
+//       user_admin: false
+//     };
+//     logs(id, event);
+//     console.log("\n\nuserDBafter: ", Object.keys(userDB).length)
+//     return (`User ${name} has been created!`);   
+//   })
+// }
 createUser = (newUser) => {
   const event = eventType.create_user;
 console.log("eventType= ", event)
@@ -19,7 +39,7 @@ console.log("userDBbefore: ", Object.keys(userDB).length);
       password,
       user_admin: false
     };
-    logs(id, event);
+    recordLog(id, event);
     console.log("\n\nuserDBafter: ", Object.keys(userDB).length)
   return (`User ${name} has been created!`);   
 }
