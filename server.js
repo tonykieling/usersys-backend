@@ -14,7 +14,6 @@ const { displayAllLogs,
 
 const app = express();
 const PORT = 3333;
-const bcrypt = require('bcrypt');
 
 const cookieSession = require('cookie-session');
 app.use(cookieSession({
