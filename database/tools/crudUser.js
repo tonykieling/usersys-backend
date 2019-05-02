@@ -119,15 +119,41 @@ const updateUser = (data) => {
   return {status: false, message: `User ${userId} not found.`};
 }
 
+
+login = (user) => {
+  const userId = (checkPassword(user));
+  if (userId === "NoUser") {
+    recordLog(null, eventType.login_fail);
+    return false;
+  }
+
+  if (userId.status) {
+    recordLog(userId.id, eventType.login);
+    return true;
+  }
+
+  recordLog(userId.id, eventType.login_fail);
+  return false;
+}
+
+
 checkPassword = (user) => {
   const { email, password } = user;
-  console.log(`user: ${user} - email: ${email} - password: ${password}`);
   const db = userDB;
   const userId = searchByEmail(email);
-  console.log("userId-- ", userId);
+  if (!userId) return "NoUser";
+
   if (db[userId.id].password === password)
-    return true;
-  return false;
+    return {status: true, id: userId.id};
+  return {status: false, id: userId.id};
+}
+
+
+logout = (email) => {
+  const user = searchByEmail(email);
+console.log("user= ", user);
+  recordLog(user.id, eventType.logout);
+  return (`${user.name} was logouted`);
 }
 
 
@@ -136,11 +162,14 @@ const deleteUser = (nameUser) => {
 
   if (userDbID) {
     const db = userDB;
+    const tempUser = db[userDbID].id;
     delete db[userDbID];
+    recordLog(tempUser, eventType.delete_user);
     return ({status: true,
             message: `User ${nameUser} has been deleted successfully.`});
   }
 
+  recordLog(null, eventType.delete_fail)
   return {status: false, message: `User ${nameUser} not found.`};
 }
 
@@ -152,5 +181,6 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserId,
-  checkPassword
+  login,
+  logout
 }

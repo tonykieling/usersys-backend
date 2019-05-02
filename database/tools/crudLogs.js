@@ -18,7 +18,7 @@ recordLog = (userId, event) => {
   //   dt_time: Date.now(),
   //   event
   // }]
-  console.log(`there is ${logsDB.length} LOG recorded`);
+  console.log(`#${logsDB.length} LOG recorded`);
   return;
 }
 
