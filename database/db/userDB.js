@@ -1,4 +1,5 @@
 const randomID = require('../tools/randomGen.js');
+const bcrypt = require('bcrypt');
 
 const num1 = randomID();
 const num2 = randomID();
@@ -9,7 +10,8 @@ const user = {
     id: num1,
     name: "Bob",
     email: "bob@email",
-    password: "bobpasswd",
+    // password: "bobpasswd",
+    password: bcrypt.hashSync("bob", 10),
     user_admin: false
   },
 
@@ -17,7 +19,8 @@ const user = {
     id: num2,
     name: "Tony",
     email: "tony@email",
-    password: "TonyP@$$",
+    // password: "TonyP@$$",
+    password: bcrypt.hashSync("tony", 10),
     user_admin: true
   },
 
@@ -25,7 +28,8 @@ const user = {
     id: num3,
     name: "Sue",
     email: "sue@email",
-    password: "passSUE",
+    // password: "passSUE",
+    password: bcrypt.hashSync("sue", 10),
     user_admin: false
   }
 };

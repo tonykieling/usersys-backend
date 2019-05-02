@@ -2,6 +2,7 @@ const userDB = require('../db/userDB.js');
 const randomID = require('./randomGen.js');
 const { recordLog } = require('./crudLogs.js');
 const eventType = require('./eventType.js');
+const bcrypt = require('bcrypt');
 
 // user register
 // it has to receive name, email and password
@@ -36,7 +37,8 @@ console.log("userDBbefore: ", Object.keys(userDB).length);
       id,
       name,
       email,
-      password,
+      password: bcrypt.hashSync(password, 10),
+      // password,
       user_admin: false
     };
     recordLog(id, event);
@@ -143,8 +145,11 @@ checkPassword = (user) => {
   const userId = searchByEmail(email);
   if (!userId) return "NoUser";
 
-  if (db[userId.id].password === password)
+  if(bcrypt.compareSync(password, db[userId.id].password)) {
+    // req.session.user_id = userId;
+  // if (db[userId.id].password === password)
     return {status: true, id: userId.id};
+  }
   return {status: false, id: userId.id};
 }
 

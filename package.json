@@ -21,7 +21,9 @@
   },
   "homepage": "https://github.com/tonykieling/user_project#readme",
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
+    "cookie-session": "^1.3.3",
     "express": "^4.16.4"
   }
 }

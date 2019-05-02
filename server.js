@@ -14,6 +14,14 @@ const { displayAllLogs,
 
 const app = express();
 const PORT = 3333;
+const bcrypt = require('bcrypt');
+
+const cookieSession = require('cookie-session');
+app.use(cookieSession({
+  name: 'session',
+  keys: ['*K3y+'],
+  maxAge: 24 * 60 * 60 * 1000
+}));
 
 // without using middleware (placed before them)
 app.get('/', (req, res) => {
@@ -23,7 +31,7 @@ app.get('/', (req, res) => {
 
 // middleware
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
  
 // parse application/json
 app.use(bodyParser.json());
@@ -150,12 +158,19 @@ app.get('/showLogs-name/:name', (req, res) => {
 
 app.post('/login', (req, res) => {
   console.log("login: ", req.body)
-  login(req.body) ? res.send("login is OK") : res.status(400).send("Wrong use/password!");
+  if (login(req.body)) {
+    req.session.userId = req.body.email;
+    res.send("login is OK");
+    return;
+  }
+  
+  res.status(400).send("Wrong use/password!");
 })
 
 
 app.post('/logout', (req, res) => {
   console.log('logout: ', req.body);
+  req.session[req.body.email] = null;
   res.send(logout(req.body.email))
 });
 
