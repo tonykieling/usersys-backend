@@ -2,10 +2,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { createUser,
         readAllUsers,
-        readByName,
-        readByEmail,
+        searchByName,
+        searchByEmail,
         updateUser,
-        deleteUser, getUserId } = require('./database/tools/crudUser.js');
+        deleteUser,
+        getUserId,
+        checkPassword } = require('./database/tools/crudUser.js');
 // const logs = require('./database/db/logsDB.js');
 const { displayAllLogs, logPerId } = require('./database/tools/crudLogs.js')
 
@@ -72,7 +74,7 @@ console.log('inside user-create')
 // it gets the user by their name
 app.get('/user-name/:name', (req, res) => {
   const name = req.params.name
-  const result = readByName(name);
+  const result = searchByName(name);
   if (!result) {
     res.status(400).send(`User ${name} does NOT exist`);
     return;
@@ -84,7 +86,7 @@ app.get('/user-name/:name', (req, res) => {
 // it gets the user by their email
 app.get('/user-email/:email', (req, res) => {
   const email = req.params.email
-  const result = readByEmail(email);
+  const result = searchByEmail(email);
 
   if (!result) {
     res.status(400).send(`User ${email} does NOT exist`);
@@ -144,6 +146,11 @@ app.get('/showLogs-name/:name', (req, res) => {
   res.send(logPerId(userId));
 })
 
+
+app.post('/login', (req, res) => {
+  console.log("login: ", req.body)
+  checkPassword(req.body) ? res.send("OK") : res.status(400).send("NOK");
+})
 
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,9 +1,9 @@
 const logsDB = require('../db/logsDB.js');
 const randomId = require('./randomGen.js');
-// const { readByName, getUserId } = require('./crudUser.js');
+// const { getUserId } = require('./crudUser.js');
 
 recordLog = (userId, event) => {
-  console.log('Inside LOGS!!!\n user: ', userId, event)
+  // console.log('Inside LOGS!!!\n user: ', userId, event)
   logsDB.push({
     id: randomId(),
     user_id: userId,
@@ -27,6 +27,7 @@ displayAllLogs = () => {
 }
 
 logPerId = (id) => {
+  // getUserId('test')
 //   console.log("id received is " + id);
 // console.log(logsDB);
   const result = logsDB.filter(log => id === log.user_id);

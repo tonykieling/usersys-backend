@@ -57,11 +57,11 @@ const readAllUsers = () => {
 // query user by name.
 // It's NOT case sensitive due to the 'toLowerCase' invoked function
 // it returns the name + email OR false, if it doesn't match
-const readByName = (name) => {
+const searchByName = (name) => {
   const db = userDB;
   for (let k in db)
     if (db[k].name.toLowerCase() === name.toLowerCase())
-      return { name: db[k].name, email: db[k].email };
+      return { name: db[k].name, email: db[k].email, id: db[k].id };
 
   return false;
 }
@@ -70,10 +70,11 @@ const readByName = (name) => {
 // query user by email
 // It's NOT case sensitive due to the 'toLowerCase' invoked function
 // it returns name + email OR false, if it doesn't match
-const readByEmail = (email) => {
+const searchByEmail = (email) => {
   const db = userDB;
   for (let k in db)
-    if (db[k].email.toLowerCase() === email.toLowerCase()) return { name: db[k].name, email: db[k].email} ;
+    if (db[k].email.toLowerCase() === email.toLowerCase())
+      return { name: db[k].name, email: db[k].email, id: db[k].id } ;
 
   return false;
 }
@@ -118,6 +119,17 @@ const updateUser = (data) => {
   return {status: false, message: `User ${userId} not found.`};
 }
 
+checkPassword = (user) => {
+  const { email, password } = user;
+  console.log(`user: ${user} - email: ${email} - password: ${password}`);
+  const db = userDB;
+  const userId = searchByEmail(email);
+  console.log("userId-- ", userId);
+  if (db[userId.id].password === password)
+    return true;
+  return false;
+}
+
 
 const deleteUser = (nameUser) => {
   const userDbID = getUserId(nameUser); // it grabs user's db id
@@ -135,9 +147,10 @@ const deleteUser = (nameUser) => {
 module.exports = {
   createUser,
   readAllUsers,
-  readByName,
-  readByEmail,
+  searchByName,
+  searchByEmail,
   updateUser,
   deleteUser,
-  getUserId
+  getUserId,
+  checkPassword
 }
