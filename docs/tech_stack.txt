@@ -2,7 +2,7 @@
 - Back-end: Node, Express
 - Front-end: React + Bootstrap
 
-CORS: Axios
+CORS: Axios (?)
 email: MailGun
 migration: Knex
 authentication: JWT (?), Cookie-Session (?), bcrypt (?)

@@ -7,7 +7,7 @@ recordLog = (userId, event) => {
   logsDB.push({
     id: randomId(),
     user_id: userId,
-    dt_time: Date.now(),
+    dt_time: new Date().toString(),
     event
   });
 

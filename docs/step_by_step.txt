@@ -4,7 +4,7 @@
   4. routes
   5. implement routes (all information is gonna be in memory, local variables in this stage)
   server.js
- 6. db creation
- 7. wireframe
- 8. implement pages
+ 6. wireframe
+ 7. implement pages
+ 8. db creation
  9. connect client and server

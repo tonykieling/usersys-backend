@@ -72,7 +72,7 @@ INFO:
 The outcome will be shown in Hours and minutes.
 
 Future Features:
- 7- Care about Change Password Log
+ 7- Care about Change Password's Log
  8- Time control of session expiration
  9- Remove User
 10- User picture
