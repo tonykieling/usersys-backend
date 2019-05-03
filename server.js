@@ -123,7 +123,7 @@ app.put('/users', (req, res) => {
 
 // it deletes the user
 // in this route the app HAVE to receive name as params
-app.post('/user-delete/:name', (req, res) => {
+app.delete('/users/:name', (req, res) => {
   const userId = req.params.name;
 
   const result = deleteUser(userId);
@@ -134,27 +134,31 @@ app.post('/user-delete/:name', (req, res) => {
 });
 
 
+// get all logs
+app.get('/showLogs', (req, res) => {
+  res.json()
+});
+
+
 // check all logs
 app.get('/logs', (req, res) => {
   console.log('checking all logs');
   // res.json(logs);
   res.json(displayAllLogs());
-})
+});
 
 
-// get all logs
-app.get('/showLogs', (req, res) => {
-  res.json()
-})
-
-app.get('/showLogs-name/:name', (req, res) => {
-// console.log("name is " + req.params.name)  
+// gets all logs based on the user's name
+app.get('/logs/:name', (req, res) => {
+console.log("name is " + req.params.name)  
   const userId = (getUserId(req.params.name));
-  // console.log(logPerId(userId));
+  console.log("userId: ", userId);
+  console.log(logPerId(userId));
   res.send(logPerId(userId));
-})
+});
 
 
+// logs in the user
 app.post('/login', (req, res) => {
   console.log("login: ", req.body)
   if (login(req.body)) {
@@ -164,9 +168,10 @@ app.post('/login', (req, res) => {
   }
   
   res.status(400).send("Wrong use/password!");
-})
+});
 
 
+// logs the user out
 app.post('/logout', (req, res) => {
   console.log('logout: ', req.body);
   req.session[req.body.email] = null;

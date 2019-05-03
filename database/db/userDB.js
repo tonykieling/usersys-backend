@@ -12,6 +12,7 @@ const user = {
     email: "bob@email",
     // password: "bobpasswd",
     password: bcrypt.hashSync("bob", 10),
+    deleted: false,
     user_admin: false
   },
 
@@ -21,6 +22,7 @@ const user = {
     email: "tony@email",
     // password: "TonyP@$$",
     password: bcrypt.hashSync("tony", 10),
+    deleted: false,
     user_admin: true
   },
 
@@ -30,6 +32,7 @@ const user = {
     email: "sue@email",
     // password: "passSUE",
     password: bcrypt.hashSync("sue", 10),
+    deleted: false,
     user_admin: false
   }
 };

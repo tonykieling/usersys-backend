@@ -38,7 +38,7 @@ console.log("userDBbefore: ", Object.keys(userDB).length);
       name,
       email,
       password: bcrypt.hashSync(password, 10),
-      // password,
+      deleted: false,
       user_admin: false
     };
     recordLog(id, event);
@@ -83,14 +83,17 @@ const searchByEmail = (email) => {
 
 
 // it gets the userId searching by their name
+// p.s.: it's a very poor criteria because it catchs the first register
+// with the specified name
+// this function is not supposed to be used, it's better handle the id instead name, but just in case.
 const getUserId = (name) => {
   console.log("getuserID, name: ", name)
 
   const db = userDB;
-  for (let k in db)
-    if(db[k].name.toLocaleLowerCase() === name.toLocaleLowerCase())
+  for (let k in db) {
+    if(db[k].name.toLowerCase() === name.toLowerCase())
       return(db[k].id);
-
+  }
   return false;
 }
 
@@ -163,13 +166,17 @@ console.log("user= ", user);
 }
 
 
+// actually this method deactivate the user
+// by setting as true the field deleted
 const deleteUser = (nameUser) => {
   const userDbID = getUserId(nameUser); // it grabs user's db id
 
   if (userDbID) {
     const db = userDB;
     const tempUser = db[userDbID].id;
-    delete db[userDbID];
+    // delete db[userDbID];   //old way, without consider login for deleted users
+    // new way is
+    db[userDbID].deleted = true;
     recordLog(tempUser, eventType.delete_user);
     return ({status: true,
             message: `User ${nameUser} has been deleted successfully.`});
