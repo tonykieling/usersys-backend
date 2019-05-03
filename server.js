@@ -67,7 +67,7 @@ app.get('/users.json', (req, res) => {
 
 
 // it creates the user account
-app.post('/user-create', (req, res) => {
+app.post('/users/new', (req, res) => {
 console.log('inside user-create')  
   const { name, email, password} = req.body;
   if (!name || !email || !password) {
@@ -80,7 +80,7 @@ console.log('inside user-create')
 
 
 // it gets the user by their name
-app.get('/user-name/:name', (req, res) => {
+app.get('/users/name/:name', (req, res) => {
   const name = req.params.name
   const result = searchByName(name);
   if (!result) {
@@ -92,7 +92,7 @@ app.get('/user-name/:name', (req, res) => {
 
 
 // it gets the user by their email
-app.get('/user-email/:email', (req, res) => {
+app.get('/users/email/:email', (req, res) => {
   const email = req.params.email
   const result = searchByEmail(email);
 
@@ -108,10 +108,10 @@ app.get('/user-email/:email', (req, res) => {
 // it updates the user info, only name or email for now
 // in this route the app HAVE to receive name as params
 // and the data to change in the body
-app.post('/user-update/:name', (req, res) => {
-  const userId = req.params.name;
-  const { name, email } = req.body;
-  const result = updateUser({ userId, user: { name, email } });
+app.put('/users', (req, res) => {
+  // const userId = req.params.name;
+  const { userId, newName, newEmail } = req.body;
+  const result = updateUser({ userId, user: { name: newName, email: newEmail } });
 
   result.status ?
     res.send(result.message) :

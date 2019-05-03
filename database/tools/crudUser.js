@@ -112,6 +112,7 @@ const updateUser = (data) => {
     // db[userDbID].name = name;
     // db[userDbID].email = email;
 
+    recordLog(userDbID, eventType.update_user);
     return ({status: true,
             message: `User ${db[userDbID].name} has been updated successfully.`,
             user: db[userDbID]});

@@ -58,7 +58,7 @@ app.get('/users/email/:email', (req, res) => {
 // in this route the app HAVE to receive name as params
 // and the data to change in the body
 // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-app.put('/users/:name', (req, res) => {
+app.put('/users', (req, res) => {
   const userId = req.params.name;
   const { name, email } = req.body;
   const result = updateUser({ userId, user: { name, email } });
