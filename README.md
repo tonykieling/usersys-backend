@@ -14,3 +14,8 @@ About:
  1. Check User deleted and apply the behaviour for the rest of the application (create, delete, update)
  2. Develop Sending email for specific actions (create user, update, changing password, etc)
  3. 
+
+ How to use:
+ 1. npm i
+ 2. run `node servers.js`
+ 

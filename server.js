@@ -15,12 +15,12 @@ const { displayAllLogs,
 const app = express();
 const PORT = 3333;
 
-const cookieSession = require('cookie-session');
-app.use(cookieSession({
-  name: 'session',
-  keys: ['*K3y+'],
-  maxAge: 24 * 60 * 60 * 1000
-}));
+// const cookieSession = require('cookie-session');
+// app.use(cookieSession({
+//   name: 'session',
+//   keys: ['*K3y+'],
+//   maxAge: 24 * 60 * 60 * 1000
+// }));
 
 // without using middleware (placed before them)
 app.get('/', (req, res) => {
@@ -60,15 +60,16 @@ app.get('/users', (req, res) => {
 });
 
 
-// another way to get data, using res.json
-app.get('/users.json', (req, res) => {
-  res.json(user) //it's not working due there is no access to userDB, only crudUSer
-});
+// // another way to get data, using res.json
+// //it's not working due there is no access to userDB, only crudUSer
+// app.get('/users.json', (req, res) => {")
+//   res.json(user)
+// });
 
 
-// it creates the user account
+// it creates the user account  
 app.post('/users/new', (req, res) => {
-console.log('inside user-create')  
+console.log('inside user-create')
   const { name, email, password} = req.body;
   if (!name || !email || !password) {
     res.status(400).send("There is something wrong with the arguments!");
