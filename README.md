@@ -29,5 +29,7 @@ About:
 
  How to use:
  1. npm i
- 2. run `node server.js`
+ 2. run `node server.js`  
  
+ p.s.:  
+ Right now the persistency is being done in memory. Next steps will migrate to PostgreSQL.
