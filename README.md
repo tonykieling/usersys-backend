@@ -17,5 +17,5 @@ About:
 
  How to use:
  1. npm i
- 2. run `node servers.js`
+ 2. run `node server.js`
  
