@@ -32,4 +32,7 @@
  2. run `node server.js`  
  
  *p.s.:*  
- Right now the persistency is being done in memory. Next steps will migrate to PostgreSQL.
+ Right now the persistency is being done in memory.  
+ Next steps:
+ - migrate data to PostgreSQL
+ - allows connection with the frontend
