@@ -36,3 +36,4 @@
  Next steps:
  - migrate data to PostgreSQL
  - allows connection with the frontend
+ - set authentication using JWT
