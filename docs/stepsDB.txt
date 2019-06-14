@@ -1,6 +1,6 @@
 # psql  
 # CREATE ROLE usersys WITH LOGIN PASSWORD 'usersys';  
-# ALTER ROLE usersys CREATEDB; // it allows the role nodepq creates a db  
+# ALTER ROLE usersys CREATEDB; // it allows the role usersys creates a db  
 # CREATE DATABASE usersys;  
 # \c usersys  
 # CREATE TABLE users (  

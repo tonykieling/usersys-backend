@@ -50,14 +50,15 @@ app.use( (req, res, next) => {
 //  it HAVE to be placed before that route
 //  and it HAVE to call next to invoke the route (or another desired mdw)
 app.use('/users', (req, res, next) => {
-  console.log('This mdw is only for \'/users\' route!');
+  console.log('This mdw is only for \'/users\' route! It does NOTHING, only to register');
   next();
 });
 
 // it gets all users from the db
-app.get('/users', (req, res) => {
-  res.send(readAllUsers());
-});
+app.get("/users", readAllUsers);
+// app.get('/users', (req, res) => {
+//   res.send(readAllUsers());
+// });
 
 
 // // another way to get data, using res.json
