@@ -1,0 +1,22 @@
+# psql  
+# CREATE ROLE usersys WITH LOGIN PASSWORD 'usersys';  
+# ALTER ROLE usersys CREATEDB; // it allows the role nodepq creates a db  
+# CREATE DATABASE usersys;  
+# \c usersys  
+# CREATE TABLE users (  
+  ID SERIAL PRIMARY KEY,  
+  name VARCHAR(40),  
+  email VARCHAR(40), 
+  password VARCHAR(40), 
+  user_active BOOL,
+  user_admin BOOL
+);  
+
+# INSERT INTO users (name, email, user_admin)  
+VALUES ('bob', 'bob@email.com', TRUE), ('sue','sue@email.com', FALSE);  
+
+
+\c | Connect to a new database
+\dt | List all tables
+\du | List all roles
+\list | List databases
