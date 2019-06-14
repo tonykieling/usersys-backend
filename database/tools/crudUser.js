@@ -76,8 +76,12 @@ login = (request, response) => {
     pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', 
       [receivedUser.email, receivedUser.password], (error, result) => {
       if (error) {
-        console.log(`error = ${error}`);
-        throw error;
+        ///////////////////////////////
+        // need to check the error/catch moment
+        console.log(`error = ${error.message}`);
+        response.send("11login was bad, try again, please");
+        // throw "error.message";
+        return;
       }
 
       // console.log(`result = ${JSON.stringify(result)}`);
@@ -90,8 +94,8 @@ login = (request, response) => {
       }
       })
   } catch (err) {
-    console.log(err.message);
-    response.send("login was bad, try again, please");
+    console.log("errorr: ", err.message);
+    response.send("22login was bad, try again, please");
   }
 }
 

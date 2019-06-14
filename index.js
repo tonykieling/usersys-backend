@@ -56,9 +56,8 @@ app.use('/users', (req, res, next) => {
 
 // it gets all users from the db
 app.get("/users", readAllUsers);
-// app.get('/users', (req, res) => {
-//   res.send(readAllUsers());
-// });
+
+app.post("/", login)
 
 
 // // another way to get data, using res.json
@@ -161,16 +160,16 @@ console.log("name is " + req.params.name)
 
 
 // logs in the user
-app.post('/login', (req, res) => {
-  console.log("login: ", req.body)
-  if (login(req.body)) {
-    req.session.userId = req.body.email;
-    res.send("login is OK");
-    return;
-  }
+// app.post('/login', (req, res) => {
+//   console.log("login: ", req.body)
+//   if (login(req.body)) {
+//     req.session.userId = req.body.email;
+//     res.send("login is OK");
+//     return;
+//   }
   
-  res.status(400).send("Wrong use/password!");
-});
+//   res.status(400).send("Wrong use/password!");
+// });
 
 
 // logs the user out

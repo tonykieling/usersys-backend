@@ -10,12 +10,13 @@ const pool = new Pool({
 
 // login method
 module.exports = login = (request, response) => {
-  console.log("inside login method");
+  console.log("inside login methodddddd");
   try {
     const receivedUser = request.body;
     pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', 
       [receivedUser.email, receivedUser.password], (error, result) => {
     // pool.query('SELECT * FROM users', (error, result) => {
+      console.log("result== ", result)
       if (error) {
         console.log(`error = ${error}`);
         throw error;
