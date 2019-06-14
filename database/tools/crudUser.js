@@ -68,14 +68,39 @@ console.log("inside getUsers");
   });
 }
   
-// // this is a function which returns all user
-// const readAllUsers = () => {
-//   if (!userDB)
-//     return ('There is no user registered!');
+// login method
+login = (request, response) => {
+console.log("inside login method");
+  try {
+    const receivedUser = request.body;
+    console.log("receivedUser: ", receivedUser);
+    pool.query('SELECT * FROM users WHERE email = $1 AND password = $2',
+      [receivedUser.email, receivedUser.password], (error, result) => {
+        if (error)
+          throw error;
+          response.send(`Hi ${receivedUser.email}`);
+      })
+  } catch (err) {
+    console.log(err.message)
+    response.send("login was bad, try again, please");
+  }
+}
 
-//   return (userDB);
+// login = (user) => {
+//   const userId = (checkPassword(user));
+//   if (userId === "NoUser") {
+//     recordLog(null, eventType.login_fail);
+//     return false;
+//   }
+
+//   if (userId.status) {
+//     recordLog(userId.id, eventType.login);
+//     return true;
+//   }
+
+//   recordLog(userId.id, eventType.login_fail);
+//   return false;
 // }
-
 
 // query user by name.
 // It's NOT case sensitive due to the 'toLowerCase' invoked function
@@ -147,21 +172,6 @@ const updateUser = (data) => {
 }
 
 
-login = (user) => {
-  const userId = (checkPassword(user));
-  if (userId === "NoUser") {
-    recordLog(null, eventType.login_fail);
-    return false;
-  }
-
-  if (userId.status) {
-    recordLog(userId.id, eventType.login);
-    return true;
-  }
-
-  recordLog(userId.id, eventType.login_fail);
-  return false;
-}
 
 
 checkPassword = (user) => {
@@ -208,13 +218,14 @@ const deleteUser = (nameUser) => {
 }
 
 module.exports = {
-  createUser,
   readAllUsers,
+  login,
+
+  createUser,
   searchByName,
   searchByEmail,
   updateUser,
   deleteUser,
   getUserId,
-  login,
   logout
 }
