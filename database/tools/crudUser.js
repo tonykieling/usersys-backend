@@ -71,32 +71,46 @@ console.log("inside getUsers");
 // // login method
 login = (request, response) => {
   console.log("inside login method");
-  try {
-    const receivedUser = request.body;
-    pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', 
-      [receivedUser.email, receivedUser.password], (error, result) => {
-      if (error) {
-        ///////////////////////////////
-        // need to check the error/catch moment
-        console.log(`error = ${error.message}`);
-        response.send("11login was bad, try again, please");
-        // throw "error.message";
-        return;
-      }
+  const receivedUser = request.body;
+  console.log("receivedUser: ", receivedUser);
+  pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', 
+  [receivedUser.email, receivedUser.password], (error, result) => {
+    // return new Promise((res, rej) => {
+      try {
+        if (error) {
+          // /////////////////////////////
+          // need to check the error/catch moment
+          // console.log(`error = ${error.message}`);
+          // response.send("11login was bad, try again, please");
+          // return;
+          throw error;
+        }
 
-      // console.log(`result = ${JSON.stringify(result)}`);
-      if (result.rowCount > 0) {
-        response.status(200).send(`Hi ${receivedUser.email}`);
-        return;
-      } else {
-        response.status(400).send("user/password wrong!");
-        return;
+        // console.log(`result = ${JSON.stringify(result)}`);
+        if (result.rowCount > 0) {
+          console.log("result===> ", result.rows[0].id);
+          const {id, name, email, user_admin, user_active} = result.rows[0];
+          const user = {id, name, email, user_admin, user_active};
+          // response.status(200).send(`Hi ${JSON.stringify(user)}`);
+          // response.status(200).send(user);
+          response.send(user);
+          return;
+          // response.status(200).send(res(user));
+          // return(res(user));
+          // res(user);
+        } else {
+          response.status(400).send({message: "user/password wrong!"});
+          // res("user/password wrong!")
+          // return;
+        }
+      } catch (err) {
+        console.log("errorr: ", err.message);
+        response.send("22login was bad, try again, please");
+        // res("22login was bad, try again, please");
       }
-      })
-  } catch (err) {
-    console.log("errorr: ", err.message);
-    response.send("22login was bad, try again, please");
-  }
+    })
+
+// })
 }
 
 
