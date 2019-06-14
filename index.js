@@ -11,9 +11,10 @@ const { createUser,
         logout } = require('./database/tools/crudUser.js');
 const { displayAllLogs,
         logPerId } = require('./database/tools/crudLogs.js')
-
+const cors = require('cors');
 const app = express();
 const PORT = 3333;
+app.use(cors());
 
 // const cookieSession = require('cookie-session');
 // app.use(cookieSession({
