@@ -37,25 +37,47 @@ const pool = new Pool({
       //     return (`User ${name} has been created!`);   
       //   })
 // }
-createUser = (newUser) => {
+createUser = (request, response) => {
+  const receivedUser = request.body;
   const event = eventType.create_user;
   console.log("eventType= ", event)
-  console.log("userDBbefore: ", Object.keys(userDB).length);
-  const db = userDB;
-  const { name, email, password } = newUser;
-  const id = randomID();
-  db[id] = {
-    id,
-    name,
-    email,
-    password: bcrypt.hashSync(password, 10),
-    deleted: false,
-    user_admin: false
-  };
+  // console.log("userDBbefore: ", Object.keys(userDB).length);
+  // const db = userDB;
+  const { name, email, password } = receivedUser;
+  // const id = randomID();
+  // db[id] = {
+  //   id,
+  //   name,
+  //   email,
+  //   password: bcrypt.hashSync(password, 10),
+  //   deleted: false,
+  //   user_admin: false
+  // };
+  /////////////////////FIRST NEED TO CHECK if user already exists
+  pool.query('INSERT INTO users (name, email, user_active, user_admin) VALUES ($1, $2)', 
+   [name, email, true, false], (error, result) => {
+      try {
+        if (error) {
+          console.log(`createUser-error = ${error.message}`);
+          throw error;
+        }
+
+          console.log("createUser-result===> ", result.rows[0].id);
+          const { id, name, email, user_admin, user_active } = result.rows[0];
+          const user = { id, name, email, user_admin, user_active };
+          response.send(user);
+          return;
+
+      } catch (err) {
+        console.log("errorr: ", err.message);
+        response.send("22login was bad, try again, please");
+      }
+    })
   recordLog(id, event);
   console.log("\n\nuserDBafter: ", Object.keys(userDB).length)
   return (`User ${name} has been created!`);   
 }
+
 
 const readAllUsers = (request, response) => {
 console.log("inside getUsers");
@@ -68,49 +90,62 @@ console.log("inside getUsers");
   });
 }
 
-// // login method
-login = (request, response) => {
-  console.log("inside login method");
-  const receivedUser = request.body;
-  console.log("receivedUser: ", receivedUser);
-  pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', 
-  [receivedUser.email, receivedUser.password], (error, result) => {
-    // return new Promise((res, rej) => {
+userQuery = user => {
+  return new Promise((res, rej) => {
+    pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', 
+      [user.email, user.password], (error, result) => {
       try {
         if (error) {
-          // /////////////////////////////
-          // need to check the error/catch moment
-          // console.log(`error = ${error.message}`);
-          // response.send("11login was bad, try again, please");
-          // return;
+          console.log(`userQuery error = ${error.message}`);
           throw error;
         }
-
-        // console.log(`result = ${JSON.stringify(result)}`);
         if (result.rowCount > 0) {
           console.log("result===> ", result.rows[0].id);
-          const {id, name, email, user_admin, user_active} = result.rows[0];
-          const user = {id, name, email, user_admin, user_active};
-          // response.status(200).send(`Hi ${JSON.stringify(user)}`);
-          // response.status(200).send(user);
-          response.send(user);
-          return;
-          // response.status(200).send(res(user));
-          // return(res(user));
-          // res(user);
+          const { id, name, email, user_admin, user_active } = result.rows[0];
+          const user = { id, name, email, user_admin, user_active };
+          res(user)
         } else {
-          response.status(400).send({message: "user/password wrong!"});
-          // res("user/password wrong!")
-          // return;
+          res({message: "user/password wrong!"});
         }
       } catch (err) {
-        console.log("errorr: ", err.message);
-        response.send("22login was bad, try again, please");
-        // res("22login was bad, try again, please");
+        console.log("userQuery error: ", err.message);
+        res({message: "Something BAD has happened! Try it again."});
       }
-    })
+    });
+  });
+}
 
-// })
+// // login method
+login = async (request, response) => {
+  console.log("inside login method");
+  const receivedUser = request.body;
+  const result = await userQuery(receivedUser);
+  console.log("result-- ", result);
+  if (result.id)
+    response.send(result);
+  // pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', 
+  //   [receivedUser.email, receivedUser.password], (error, result) => {
+  //   try {
+  //     if (error) {
+  //       console.log(`error = ${error.message}`);
+  //       throw error;
+  //     }
+
+  //     if (result.rowCount > 0) {
+  //       console.log("result===> ", result.rows[0].id);
+  //       const { id, name, email, user_admin, user_active } = result.rows[0];
+  //       const user = { id, name, email, user_admin, user_active };
+  //       response.send(user);
+  //       return;
+  //     } else {
+  //       response.send({message: "user/password wrong!"});
+  //       return;
+  //     }
+  //   } catch (err) {
+  //     console.log("errorr: ", err.message);
+  //     response.send("22login was bad, try again, please");
+  //   }
+  // });
 }
 
 
