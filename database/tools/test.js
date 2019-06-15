@@ -5,18 +5,26 @@ if (process.argv[2] === "1") {
   // create user with success
   url = 'http://0.0.0.0:3333/user/new';
   data = {email: 'tao@email.com', password: 'tao', name: "TAO"};
+
 } else if (process.argv[2] === "2") {
   // create user with fail
   url = 'http://0.0.0.0:3333/user/new';
   data = {email: 'tao@email.com', password: 'tao', name: "tao"};
+
 } else if (process.argv[2] === "3") {
   // login user with success
   url = 'http://0.0.0.0:3333/login';
-  data = {email: 'tao@email.com', password: 'tao', name: "TAO"};
+  data = {email: 'tao@email.com', password: 'tao'};
+
 } else if (process.argv[2] === "4") {
   // login user with fail
   url = 'http://0.0.0.0:3333/login';
-  data = {email: 'bob@email.com', password: 'tao', name: "TAO"};
+  data = {email: 'bob@email.com', password: 'tao'};
+
+} else if (process.argv[2] === "5") {
+  // login user with fail because not possible empty password
+  url = 'http://0.0.0.0:3333/login';
+  data = {email: 'bob@email.com', password: ''};
 }
 
 fetch(url, {

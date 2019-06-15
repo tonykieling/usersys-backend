@@ -15,6 +15,8 @@ const pool = new Pool({
 });
 
 // auxiliary function to check whether the user (EMAIL) exists in the database
+// it receives user email
+// it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 checkUserEmail = email => {
   return new Promise((res, rej) => {
     pool.query('SELECT * FROM users WHERE email = $1', [email], (error, result) => {
@@ -32,7 +34,7 @@ checkUserEmail = email => {
           res(user)
         } else {
           const event = eventType.check_user_email_fail;
-          recordLog(null, event);
+          recordLog(email, event);
           res({message: `checkUserEmail - NO user to ${email}!`});
         }
       } catch (err) {
@@ -47,22 +49,30 @@ checkUserEmail = email => {
 
 
 // it checks whether the user (email + password) are OK
+// it receives user email and password inside user variable
+// it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 userQuery = user => {
-  // bcrypt.compareSync(password, db[userId.id].password)
-  // bcrypt.hashSync(password, 10)
   return new Promise((res, rej) => {
-    pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', 
-      [user.email, bcrypt.hashSync(user.password, 10)], (error, result) => {
+    // the query can be replaced for checkUserEmail
+    // tryed but no success because it needs to be async.
+    // tryed async before user and inside Promise, but NO success
+    pool.query('SELECT * FROM users WHERE email = $1', [user.email], (error, result) => {
       try {
         if (error) {
           console.log(`userQuery error = ${error.message}`);
           throw error;
         }
         if (result.rowCount > 0) {
-          console.log("result===> ", result.rows[0].id);
-          const { id, name, email, user_admin, user_active } = result.rows[0];
-          const user = { id, name, email, user_admin, user_active };
-          res(user)
+          const userFromQuery = result.rows[0];
+          if(bcrypt.compareSync(user.password, userFromQuery.password)){
+            res({
+              id: userFromQuery.id,
+              email: userFromQuery.email,
+              name: userFromQuery.name,
+              userActive: userFromQuery.user_active,
+              userAdmin: userFromQuery.user_admin
+            });
+          }
         } else {
           res({message: "user/password wrong!"});
         }
@@ -74,6 +84,10 @@ userQuery = user => {
   });
 }
 
+
+// create user method
+// it receives user data to be created through request(with data inside body)
+// it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 createUser = async (request, response) => {
   console.log("inside createUser");
   const receivedUser = request.body;
@@ -81,35 +95,37 @@ createUser = async (request, response) => {
 
   const result = await checkUserEmail(email);
   if (result.id) {
-    console.log("id: ", result.id);
     const event = eventType.create_user_fail;
     recordLog(result.id, event);
     response.send({message: `Email ${email} already exists.`});
     return;
   }
-////////////////// 60
+
   pool.query('INSERT INTO users (email, name, password, user_active, user_admin) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, user_active, user_admin', 
     [email, name, bcrypt.hashSync(password, 10), false, false], (error, result) => {
-    try {
-      if (error) {
-        console.log(`createUser error = ${error.message}`);
-        throw error;
+      console.log("insert: ", bcrypt.hashSync(password, 10));
+      try {
+        if (error) {
+          console.log(`createUser error = ${error.message}`);
+          throw error;
+        }
+        const event = eventType.create_user_success;
+        const user = result.rows[0];
+        recordLog(user.id, event);
+        response.send(user);
+        return;
+      } catch (err) {
+        const event = eventType.create_user_fail;
+        recordLog(null, event);
+        console.log("createUser error: ", err.message);
+        response.send({message: "Something BAD has happened! Try it again."});
       }
-      const event = eventType.create_user_success;
-      const user = result.rows[0];
-      recordLog(user.id, event);
-      response.send(user);
-      return;
-    } catch (err) {
-      const event = eventType.create_user_fail;
-      recordLog(null, event);
-      console.log("createUser error: ", err.message);
-      response.send({message: "Something BAD has happened! Try it again."});
-    }
-  });
+    });
 }
 
 // login method
+// it receives user data to be logged through request(with data inside body)
+// it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 login = async (request, response) => {
   console.log("inside login method");
   const receivedUser = request.body;

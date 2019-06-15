@@ -25,8 +25,8 @@ app.use(cors());
 
 // without using middleware (placed before them)
 app.get('/', (req, res) => {
-  console.log('root directory');
-  res.status(200).send('this is root directory');
+  console.log("root directory");
+  res.status(200).send({message: "this is root directory"});
 });
 
 // middleware
@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use( (req, res, next) => {
-  console.log('use general- middleware');
+  // console.log('use general- middleware');
   // res.status(200).send(`2- middleware return`);
   next();
 });
@@ -51,7 +51,7 @@ app.use( (req, res, next) => {
 //  it HAVE to be placed before that route
 //  and it HAVE to call next to invoke the route (or another desired mdw)
 app.use('/users', (req, res, next) => {
-  console.log('This mdw is only for \'/users\' route! It does NOTHING, only to register');
+  // console.log('This mdw is only for \'/users\' route! It does NOTHING, only to register');
   next();
 });
 
@@ -145,7 +145,7 @@ app.get('/showLogs', (req, res) => {
 
 // check all logs
 app.get('/logs', (req, res) => {
-  console.log('checking all logs');
+  // console.log('checking all logs');
   // res.json(logs);
   res.json(displayAllLogs());
 });
