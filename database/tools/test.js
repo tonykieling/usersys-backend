@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 
-var url = 'http://0.0.0.0:3333/';
-var data = {email: 'bob@email.com', password: 'Kbob'};
+var url = 'http://0.0.0.0:3333/user/new';
+var data = {email: 'tao@email.com', password: 'tao', name: "TAO"};
 
 fetch(url, {
   method: 'POST', // or 'PUT'

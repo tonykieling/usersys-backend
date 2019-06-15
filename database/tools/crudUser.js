@@ -14,65 +14,33 @@ const pool = new Pool({
   port: 5432,
 });
 
-
-// user register
-// it has to receive name, email and password
-// createUser = (newUser) => {
-  //   return new Promise((resolve, reject) => {
-    //     const event = eventType.create_user;
-    //     console.log("eventType= ", event)
-    //     console.log("userDBbefore: ", Object.keys(userDB).length);
-    //     const db = userDB;
-    //     const { name, email, password } = newUser;
-    //     const id = randomID();
-    //     db[id] = {
-      //       id,
-      //       name,
-      //       email,
-      //       password,
-      //       user_admin: false
-      //     };
-      //     logs(id, event);
-      //     console.log("\n\nuserDBafter: ", Object.keys(userDB).length)
-      //     return (`User ${name} has been created!`);   
-      //   })
-// }
-createUser = (request, response) => {
-  const receivedUser = request.body;
-  const event = eventType.create_user;
-  console.log("eventType= ", event)
-  // console.log("userDBbefore: ", Object.keys(userDB).length);
-  // const db = userDB;
-  const { name, email, password } = receivedUser;
-  // const id = randomID();
-  // db[id] = {
-  //   id,
-  //   name,
-  //   email,
-  //   password: bcrypt.hashSync(password, 10),
-  //   deleted: false,
-  //   user_admin: false
-  // };
-  /////////////////////FIRST NEED TO CHECK if user already exists
-
-  const result = userQuery(email, password)
-  recordLog(id, event);
-  console.log("\n\nuserDBafter: ", Object.keys(userDB).length)
-  return (`User ${name} has been created!`);   
-}
-
-
-const readAllUsers = (request, response) => {
-console.log("inside getUsers");
-  pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
-    if (error) {
-      response.send("Something bad happened, try it again..")
-      throw error
-    }
-    response.status(200).json(results.rows);
+// auxiliary function to check whether the user (EMAIL) exists in the database
+checkUserEmail = email => {
+  return new Promise((res, rej) => {
+    pool.query('SELECT * FROM users WHERE email = $1', [email], (error, result) => {
+      try {
+        if (error) {
+          console.log(`checkUserEmail error = ${error.message}`);
+          throw error;
+        }
+        if (result.rowCount > 0) {
+          console.log("checkUserEmail result===> ", result.rows[0].id);
+          const { id, name, email, user_admin, user_active } = result.rows[0];
+          const user = { id, name, email, user_admin, user_active };
+          res(user)
+        } else {
+          res({message: `checkUserEmail - NO user to ${email}!`});
+        }
+      } catch (err) {
+        console.log("checkUserEmail error: ", err.message);
+        res({message: "Something BAD has happened! Try it again."});
+      }
+    });
   });
 }
 
+
+// it checks whether the user (email + password) are OK
 userQuery = user => {
   return new Promise((res, rej) => {
     pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', 
@@ -98,7 +66,49 @@ userQuery = user => {
   });
 }
 
-// // login method
+createUser = async (request, response) => {
+  console.log("inside createUser");
+  const receivedUser = request.body;
+  const event = eventType.create_user;
+  // console.log("eventType= ", event);
+  const { name, email, password } = receivedUser;
+  // const id = randomID();
+  // db[id] = {
+    //   id,
+    //   name,
+    //   email,
+    //   password: bcrypt.hashSync(password, 10),
+    //   deleted: false,
+    //   user_admin: false
+    // };
+    /////////////////////FIRST NEED TO CHECK if user already exists
+    
+    const result = await checkUserEmail(email);
+    if (result.id) {
+      console.log("id: ", result.id);
+      response.send({message: `Email ${email} already exists.`});
+      return;
+    }
+
+    pool.query('INSERT INTO users (email, name, password, user_active, user_admin) VALUES ($1, $2, $3, $4, $5) RETURNING id', 
+    [email, name, password, false, false], (error, result) => {
+    try {
+      if (error) {
+        console.log(`createUser error = ${error.message}`);
+        throw error;
+      } 
+      recordLog(result.rows[0].id, event);
+      // response.send({message: `USER - id: ${result.rows[0].id} email: ${email} has been created succesfully!`});
+      response.send({id, name, email, user_active, user_admin});
+      return;
+    } catch (err) {
+      console.log("createUser error: ", err.message);
+      response.send({message: "Something BAD has happened! Try it again."});
+    }
+  });
+}
+
+// login method
 login = async (request, response) => {
   console.log("inside login method");
   const receivedUser = request.body;
@@ -107,6 +117,18 @@ login = async (request, response) => {
     response.send(result);
   else
     response.send({message: result.message})
+}
+
+
+const readAllUsers = (request, response) => {
+console.log("inside getUsers");
+  pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
+    if (error) {
+      response.send("Something bad happened, try it again..")
+      throw error
+    }
+    response.status(200).json(results.rows);
+  });
 }
 
 

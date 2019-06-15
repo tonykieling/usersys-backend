@@ -68,17 +68,18 @@ app.post("/", login)
 // });
 
 
-// it creates the user account  
-app.post('/users/new', (req, res) => {
-console.log('inside user-create')
-  const { name, email, password} = req.body;
-  if (!name || !email || !password) {
-    res.status(400).send("There is something wrong with the arguments!");
-    return;
-  }
-  const result = createUser({ name: `${name}`, email: `${email}`, password: `${password}` });
-  res.send(result);
-});
+// it creates the user account
+app.post('/user/new', createUser);
+// app.post('/users/new', (req, res) => {
+// console.log('inside user-create')
+//   const { name, email, password} = req.body;
+//   if (!name || !email || !password) {
+//     res.status(400).send("There is something wrong with the arguments!");
+//     return;
+//   }
+//   const result = createUser({ name: `${name}`, email: `${email}`, password: `${password}` });
+//   res.send(result);
+// });
 
 
 // it gets the user by their name
