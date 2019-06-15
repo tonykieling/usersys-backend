@@ -54,25 +54,8 @@ createUser = (request, response) => {
   //   user_admin: false
   // };
   /////////////////////FIRST NEED TO CHECK if user already exists
-  pool.query('INSERT INTO users (name, email, user_active, user_admin) VALUES ($1, $2)', 
-   [name, email, true, false], (error, result) => {
-      try {
-        if (error) {
-          console.log(`createUser-error = ${error.message}`);
-          throw error;
-        }
 
-          console.log("createUser-result===> ", result.rows[0].id);
-          const { id, name, email, user_admin, user_active } = result.rows[0];
-          const user = { id, name, email, user_admin, user_active };
-          response.send(user);
-          return;
-
-      } catch (err) {
-        console.log("errorr: ", err.message);
-        response.send("22login was bad, try again, please");
-      }
-    })
+  const result = userQuery(email, password)
   recordLog(id, event);
   console.log("\n\nuserDBafter: ", Object.keys(userDB).length)
   return (`User ${name} has been created!`);   
@@ -120,32 +103,10 @@ login = async (request, response) => {
   console.log("inside login method");
   const receivedUser = request.body;
   const result = await userQuery(receivedUser);
-  console.log("result-- ", result);
   if (result.id)
     response.send(result);
-  // pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', 
-  //   [receivedUser.email, receivedUser.password], (error, result) => {
-  //   try {
-  //     if (error) {
-  //       console.log(`error = ${error.message}`);
-  //       throw error;
-  //     }
-
-  //     if (result.rowCount > 0) {
-  //       console.log("result===> ", result.rows[0].id);
-  //       const { id, name, email, user_admin, user_active } = result.rows[0];
-  //       const user = { id, name, email, user_admin, user_active };
-  //       response.send(user);
-  //       return;
-  //     } else {
-  //       response.send({message: "user/password wrong!"});
-  //       return;
-  //     }
-  //   } catch (err) {
-  //     console.log("errorr: ", err.message);
-  //     response.send("22login was bad, try again, please");
-  //   }
-  // });
+  else
+    response.send({message: result.message})
 }
 
 
