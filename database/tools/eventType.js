@@ -1,12 +1,15 @@
 const eventType = {
-  create_user   : "1- User created",
-  login         : "2- User Logged",
-  logout        : "3- User Logout",
-  update_user   : "4- User Updated",
-  delete_user   : "5- User Deleted",
-  login_fail    : "6- Login Failed",
-  delete_fail   : "7- Delete User Fail",
-  update_fail   : "8- Update User Fail"
+  create_user_success       :  "1- User created",
+  create_user_fail          :  "2- User trying to created an already existed email/account",
+  login_success             :  "3- User Logged",
+  login_fail                :  "4- Login Failed",
+  logout                    :  "5- User Logout",
+  update_user_success       :  "6- User Updated",
+  update_user_fail          :  "7- User Updated",
+  delete_user_success       :  "8- User Deleted",
+  delete_user_fail          :  "9- Delete User Fail",
+  check_user_email_success  : "10- User email checked with success",
+  check_user_email_fail     : "11- User email checked with fail"
 }
 
 module.exports = eventType;

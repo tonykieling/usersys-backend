@@ -2,7 +2,7 @@ const userDB = require('../db/userDB.js');
 const randomID = require('./randomGen.js');
 const { recordLog } = require('./crudLogs.js');
 const eventType = require('./eventType.js');
-// const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 
 const Pool = require('pg').Pool;
 
@@ -20,19 +20,25 @@ checkUserEmail = email => {
     pool.query('SELECT * FROM users WHERE email = $1', [email], (error, result) => {
       try {
         if (error) {
-          console.log(`checkUserEmail error = ${error.message}`);
+          recordLog(null, event);
           throw error;
         }
         if (result.rowCount > 0) {
           console.log("checkUserEmail result===> ", result.rows[0].id);
           const { id, name, email, user_admin, user_active } = result.rows[0];
           const user = { id, name, email, user_admin, user_active };
+          const event = eventType.check_user_email_success;
+          recordLog(user.id, event);
           res(user)
         } else {
+          const event = eventType.check_user_email_fail;
+          recordLog(null, event);
           res({message: `checkUserEmail - NO user to ${email}!`});
         }
       } catch (err) {
         console.log("checkUserEmail error: ", err.message);
+        const event = eventType.check_user_email_fail;
+        recordLog(null, event);
         res({message: "Something BAD has happened! Try it again."});
       }
     });
@@ -69,39 +75,33 @@ userQuery = user => {
 createUser = async (request, response) => {
   console.log("inside createUser");
   const receivedUser = request.body;
-  const event = eventType.create_user;
-  // console.log("eventType= ", event);
   const { name, email, password } = receivedUser;
-  // const id = randomID();
-  // db[id] = {
-    //   id,
-    //   name,
-    //   email,
-    //   password: bcrypt.hashSync(password, 10),
-    //   deleted: false,
-    //   user_admin: false
-    // };
-    /////////////////////FIRST NEED TO CHECK if user already exists
-    
-    const result = await checkUserEmail(email);
-    if (result.id) {
-      console.log("id: ", result.id);
-      response.send({message: `Email ${email} already exists.`});
-      return;
-    }
 
-    pool.query('INSERT INTO users (email, name, password, user_active, user_admin) VALUES ($1, $2, $3, $4, $5) RETURNING id', 
-    [email, name, password, false, false], (error, result) => {
+  const result = await checkUserEmail(email);
+  if (result.id) {
+    console.log("id: ", result.id);
+    const event = eventType.create_user_fail;
+    recordLog(result.id, event);
+    response.send({message: `Email ${email} already exists.`});
+    return;
+  }
+
+  pool.query('INSERT INTO users (email, name, password, user_active, user_admin) VALUES ($1, $2, $3, $4, $5) RETURNING id', 
+    [email, name, bcrypt.hashSync(password, 10), false, false], (error, result) => {
     try {
       if (error) {
+        const event = eventType.create_user_fail;
+        recordLog(null, event);
         console.log(`createUser error = ${error.message}`);
         throw error;
-      } 
+      }
+      const event = eventType.create_user_success;
       recordLog(result.rows[0].id, event);
-      // response.send({message: `USER - id: ${result.rows[0].id} email: ${email} has been created succesfully!`});
       response.send({id, name, email, user_active, user_admin});
       return;
     } catch (err) {
+      const event = eventType.create_user_fail;
+      recordLog(null, event);
       console.log("createUser error: ", err.message);
       response.send({message: "Something BAD has happened! Try it again."});
     }
@@ -113,10 +113,16 @@ login = async (request, response) => {
   console.log("inside login method");
   const receivedUser = request.body;
   const result = await userQuery(receivedUser);
-  if (result.id)
-    response.send(result);
-  else
-    response.send({message: result.message})
+  if (result.id) {
+    const event = eventType.login_success;
+    recordLog(result.id, event);
+  }
+  else {
+    const event = eventType.login_fail;
+    recordLog(receivedUser.email, event);
+  }
+
+  response.send(result)
 }
 
 

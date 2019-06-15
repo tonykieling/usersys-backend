@@ -1,7 +1,17 @@
 const fetch = require('node-fetch');
+console.log(process.argv[2]);
+let url = "", data ="";
 
-var url = 'http://0.0.0.0:3333/user/new';
-var data = {email: 'tao@email.com', password: 'tao', name: "TAO"};
+if (process.argv[2] === "1") {
+  url = 'http://0.0.0.0:3333/user/new';
+  data = {email: 'tao@email.com', password: 'tao', name: "TAO"};
+} else if (process.argv[2] === "2") {
+  url = 'http://0.0.0.0:3333/';
+  data = {email: 'tao@email.com', password: 'tao', name: "TAO"};
+} else if (process.argv[2] === "3") {
+  url = 'http://0.0.0.0:3333/';
+  data = {email: 'bob@email.com', password: 'tao', name: "TAO"};
+}
 
 fetch(url, {
   method: 'POST', // or 'PUT'
