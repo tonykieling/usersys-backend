@@ -58,7 +58,7 @@ app.use('/users', (req, res, next) => {
 // it gets all users from the db
 app.get("/users", readAllUsers);
 
-app.post("/", login)
+app.post("/login", login)
 
 
 // // another way to get data, using res.json

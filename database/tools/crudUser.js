@@ -48,9 +48,11 @@ checkUserEmail = email => {
 
 // it checks whether the user (email + password) are OK
 userQuery = user => {
+  // bcrypt.compareSync(password, db[userId.id].password)
+  // bcrypt.hashSync(password, 10)
   return new Promise((res, rej) => {
     pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', 
-      [user.email, user.password], (error, result) => {
+      [user.email, bcrypt.hashSync(user.password, 10)], (error, result) => {
       try {
         if (error) {
           console.log(`userQuery error = ${error.message}`);
@@ -85,19 +87,18 @@ createUser = async (request, response) => {
     response.send({message: `Email ${email} already exists.`});
     return;
   }
-
-  pool.query('INSERT INTO users (email, name, password, user_active, user_admin) VALUES ($1, $2, $3, $4, $5) RETURNING id', 
+////////////////// 60
+  pool.query('INSERT INTO users (email, name, password, user_active, user_admin) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, user_active, user_admin', 
     [email, name, bcrypt.hashSync(password, 10), false, false], (error, result) => {
     try {
       if (error) {
-        const event = eventType.create_user_fail;
-        recordLog(null, event);
         console.log(`createUser error = ${error.message}`);
         throw error;
       }
       const event = eventType.create_user_success;
-      recordLog(result.rows[0].id, event);
-      response.send({id, name, email, user_active, user_admin});
+      const user = result.rows[0];
+      recordLog(user.id, event);
+      response.send(user);
       return;
     } catch (err) {
       const event = eventType.create_user_fail;
