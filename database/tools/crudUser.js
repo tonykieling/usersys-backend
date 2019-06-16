@@ -103,7 +103,6 @@ createUser = async (request, response) => {
 
   pool.query('INSERT INTO users (email, name, password, user_active, user_admin) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, user_active, user_admin', 
     [email, name, bcrypt.hashSync(password, 10), false, false], (error, result) => {
-      console.log("insert: ", bcrypt.hashSync(password, 10));
       try {
         if (error) {
           console.log(`createUser error = ${error.message}`);
@@ -140,6 +139,41 @@ login = async (request, response) => {
   }
 
   response.send(result)
+}
+
+
+// this methos updates user info
+// it receives user id and the data to be changed through request(with data inside body)
+// it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
+const updateUser = async (request, response) => {
+  console.log("inside updateUser");
+  const { id, email, name, actualEmail } = request.body;
+  const result = await checkUserEmail(actualEmail);
+  if (result.id) {
+    pool.query(
+      'UPDATE users SET email = $1, name = $2, user_active = $3, user_admin = $4 WHERE id = $5 RETURNING email, name, user_active, user_admin',
+      [email, name, false, false, id], (error, result) => {
+      try {
+        if (error) {
+          console.log(`updateUser error = ${error.message}`);
+          throw error;
+        }
+        const event = eventType.update_user_success;
+        const user = result.rows[0];
+        recordLog(user.id, event);
+        response.send(user);
+        return;
+      } catch (err) {
+        const event = eventType.create_user_fail;
+        recordLog(null, event);
+        console.log("updateUser error: ", err.message);
+        response.send({message: "Something BAD has happened! Try it again."});
+      }
+    });
+  } else {
+    console.log("something wrong with update");
+    response.send({message: "Error - UPDATE"});
+  }
 }
 
 
@@ -195,36 +229,6 @@ const getUserId = (name) => {
   }
   return false;
 }
-
-
-// this func updates either name or email's user, only for now
-// the argument choosed was name
-const updateUser = (data) => {
-  const userId = data.userId;
-  const userDbID = getUserId(userId); // it grabs user's db id
-
-  if (userDbID) {
-    const db = userDB;
-    const { name, email } = data.user;
-
-    // this option uses spread operator and changes only the data passed after that
-    db[userDbID] = { ...db[userDbID], name, email } 
-    
-    // the option bellow needs to pass each data, more lines to write down..
-    // db[userDbID].name = name;
-    // db[userDbID].email = email;
-
-    recordLog(userDbID, eventType.update_user);
-    return ({status: true,
-            message: `User ${db[userDbID].name} has been updated successfully.`,
-            user: db[userDbID]});
-            // the message also returns the new user data, just in case.
-  }
-
-  return {status: false, message: `User ${userId} not found.`};
-}
-
-
 
 
 checkPassword = (user) => {

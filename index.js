@@ -70,15 +70,22 @@ app.post("/login", login)
 
 // it creates the user account
 app.post('/user/new', createUser);
-// app.post('/users/new', (req, res) => {
-// console.log('inside user-create')
-//   const { name, email, password} = req.body;
-//   if (!name || !email || !password) {
-//     res.status(400).send("There is something wrong with the arguments!");
-//     return;
-//   }
-//   const result = createUser({ name: `${name}`, email: `${email}`, password: `${password}` });
-//   res.send(result);
+
+
+// it updates the user info, only name or email for now
+// in this route the app HAVE to receive name as params
+// and the data to change in the body
+app.put("/user", updateUser);
+// app.put('/users', (req, res) => {
+//   // const userId = req.params.name;
+//   const { userId, newName, newEmail } = req.body;
+//   const result = updateUser({ userId, user: { name: newName, email: newEmail } });
+  
+//   result.status ?
+//   res.send(result.message) :
+//   res.status(400).send(result.message);
+  
+//   // res.json(result); // it can return an whole object
 // });
 
 
@@ -93,7 +100,6 @@ app.get('/users/name/:name', (req, res) => {
   res.send(result);
 });
 
-
 // it gets the user by their email
 app.get('/users/email/:email', (req, res) => {
   const email = req.params.email
@@ -105,22 +111,6 @@ app.get('/users/email/:email', (req, res) => {
   }
 
   res.send(result);
-});
-
-
-// it updates the user info, only name or email for now
-// in this route the app HAVE to receive name as params
-// and the data to change in the body
-app.put('/users', (req, res) => {
-  // const userId = req.params.name;
-  const { userId, newName, newEmail } = req.body;
-  const result = updateUser({ userId, user: { name: newName, email: newEmail } });
-
-  result.status ?
-    res.send(result.message) :
-    res.status(400).send(result.message);
-
-  // res.json(result); // it can return an whole object
 });
 
 

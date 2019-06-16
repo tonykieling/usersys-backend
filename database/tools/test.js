@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 let url = "", data ="";
+let method = "";
 
 if (process.argv[2] === "1") {
   // create user with success
@@ -25,10 +26,15 @@ if (process.argv[2] === "1") {
   // login user with fail because not possible empty password
   url = 'http://0.0.0.0:3333/login';
   data = {email: 'bob@email.com', password: ''};
+} else if (process.argv[2] === "6") {
+  // UPDATE
+  url = 'http://0.0.0.0:3333/user';
+  data = {id: 1, actualEmail: "bob@email.com", email: 'bob@email.com', name: 'bob'};
+  method = "PUT";
 }
 
 fetch(url, {
-  method: 'POST', // or 'PUT'
+  method: method || 'POST', // or 'PUT'
   body: JSON.stringify(data), // data can be `string` or {object}!
   headers:{
     'Content-Type': 'application/json'
