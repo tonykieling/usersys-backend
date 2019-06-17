@@ -64,6 +64,10 @@ userQuery = user => {
         }
         if (result.rowCount > 0) {
           const userFromQuery = result.rows[0];
+          console.log("results=", userFromQuery.password, user.password)
+          // const a = (bcrypt.hashSync("aaa", 10))
+          // console.log((bcrypt.compareSync("aaa", a)))
+          // console.log(bcrypt.compareSync("tao", userFromQuery.password) ? "ok" : "problem")
           if(bcrypt.compareSync(user.password, userFromQuery.password)){
             res({
               id: userFromQuery.id,
@@ -72,10 +76,10 @@ userQuery = user => {
               userActive: userFromQuery.user_active,
               userAdmin: userFromQuery.user_admin
             });
+          } else {
+            res({message: "user/password wrong!"});
           }
-        } else {
-          res({message: "user/password wrong!"});
-        }
+        } else throw error;
       } catch (err) {
         console.log("userQuery error: ", err.message);
         res({message: "Something BAD has happened! Try it again."});
@@ -129,6 +133,7 @@ login = async (request, response) => {
   console.log("inside login method");
   const receivedUser = request.body;
   const result = await userQuery(receivedUser);
+  console.log("result-", result);
   if (result.id) {
     const event = eventType.login_success;
     recordLog(result.id, event);
