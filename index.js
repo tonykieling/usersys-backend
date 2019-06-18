@@ -2,8 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { createUser,
         readAllUsers,
-        searchByName,
-        searchByEmail,
         updateUser,
         deleteUser,
         getUserId,
@@ -58,63 +56,28 @@ app.use('/users', (req, res, next) => {
 // it gets all users from the db
 app.get("/users", readAllUsers);
 
-app.post("/login", login)
 
-
-// // another way to get data, using res.json
-// //it's not working due there is no access to userDB, only crudUSer
-// app.get('/users.json', (req, res) => {")
-//   res.json(user)
-// });
-
+// ##############################################################################################
+// ###################################  users method  ###########################################
+// ##############################################################################################
+// it logs the user into the system
+// it suppose to receive email + paswword inside request.body
+// it return either user (id, name, email, user_active and user_admin) OR a fail message 
+app.post("/login", login);
 
 // it creates the user account
 app.post('/user/new', createUser);
 
-
 // it updates the user info, only name or email for now
-// in this route the app HAVE to receive name as params
-// and the data to change in the body
+// it receives email as the user identification
+// it return user (id, name, email, user_active, user_admin) OR a fail message
 app.put("/user", updateUser);
 
-
-// it gets the user by their name
-app.get('/users/name/:name', (req, res) => {
-  const name = req.params.name
-  const result = searchByName(name);
-  if (!result) {
-    res.status(400).send(`User ${name} does NOT exist`);
-    return;
-  }
-  res.send(result);
-});
-
-// it gets the user by their email
-app.get('/users/email/:email', (req, res) => {
-  const email = req.params.email
-  const result = searchByEmail(email);
-
-  if (!result) {
-    res.status(400).send(`User ${email} does NOT exist`);
-    return;
-  }
-
-  res.send(result);
-});
-
-
-// it deletes the user
-// in this route the app HAVE to receive name as params
+// it deletes (actually deactivate) the user
+// it receives email as the user identification
+// it return user (id, name, email, user_active, user_admin) OR a fail message
 app.delete('/user', deleteUser);
-// (req, res) => {
-//   const userId = req.params.name;
 
-//   const result = deleteUser(userId);
-
-//   result.status ?
-//     res.send(result.message) :
-//     res.status(400).send(result.message);
-// });
 
 
 // get all logs
@@ -155,6 +118,9 @@ console.log("name is " + req.params.name)
 
 
 // logs the user out
+// check how to implement this
+// ? is the control in the frontend side ?
+// ? what about energy or networking shortage ?
 app.post('/logout', (req, res) => {
   console.log('logout: ', req.body);
   req.session[req.body.email] = null;
@@ -162,4 +128,4 @@ app.post('/logout', (req, res) => {
 });
 
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Service "USER CONTROL SYSTEM" running on port ${PORT}`));

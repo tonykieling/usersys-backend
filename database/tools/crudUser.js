@@ -86,6 +86,26 @@ userQuery = user => {
 }
 
 
+
+// login method
+// it receives user data to be logged through request(with data inside body)
+// it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
+login = async (request, response) => {
+  console.log("inside login method");
+  const receivedUser = request.body;
+  const result = await userQuery(receivedUser);
+  console.log("result-", result);
+  if (result.id) {
+    const event = eventType.login_success;
+    recordLog(result.id, event);
+  } else {
+    const event = eventType.login_fail;
+    recordLog(receivedUser.email, event);
+  }  
+  response.send(result)
+}
+
+
 // create user method
 // it receives user data to be created through request(with data inside body)
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
@@ -103,7 +123,7 @@ createUser = async (request, response) => {
   }
 
   pool.query('INSERT INTO users (email, name, password, user_active, user_admin) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, user_active, user_admin', 
-    [email, name, bcrypt.hashSync(password, 10), false, false], (error, result) => {
+    [email, name, bcrypt.hashSync(password, 10), true, false], (error, result) => {
       try {
         if (error) {
           console.log(`createUser error = ${error.message}`);
@@ -123,38 +143,22 @@ createUser = async (request, response) => {
     });
 }
 
-// login method
-// it receives user data to be logged through request(with data inside body)
-// it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
-login = async (request, response) => {
-  console.log("inside login method");
-  const receivedUser = request.body;
-  const result = await userQuery(receivedUser);
-  console.log("result-", result);
-  if (result.id) {
-    const event = eventType.login_success;
-    recordLog(result.id, event);
-  }
-  else {
-    const event = eventType.login_fail;
-    recordLog(receivedUser.email, event);
-  }
-
-  response.send(result)
-}
-
 
 // this methos updates user info
 // it receives user id and the data to be changed through request(with data inside body)
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 const updateUser = async (request, response) => {
   console.log("inside updateUser");
-  const { id, email, name, actualEmail, user_active, user_admin } = request.body;
-  const result = await checkUserEmail(actualEmail);
+  // const { id, email, name, actualEmail, user_active, user_admin } = request.body;
+  const receivedUser = request.body;
+  console.log("user", receivedUser)
+  const result = await checkUserEmail(receivedUser.actualEmail);
+  console.log("result", result.id)
   if (result.id) {
     pool.query(
       'UPDATE users SET email = $1, name = $2, user_active = $3, user_admin = $4 WHERE id = $5 RETURNING id, email, name, user_active, user_admin',
-      [email, name, true || user_active, user_admin || false, id], (error, result) => {
+      [receivedUser.email, receivedUser.name, receivedUser.user_active || false, receivedUser.user_admin || false, result.id],
+      (error, result) => {
       try {
         if (error) {
           console.log(`updateUser error = ${error.message}`);
@@ -170,9 +174,12 @@ const updateUser = async (request, response) => {
         recordLog(null, event);
         console.log("updateUser error: ", err.message);
         response.send({message: "Something BAD has happened! Try it again."});
+        return;
       }
     });
   } else {
+    const event = eventType.create_user_fail;
+    recordLog(user.id, event);
     console.log("something wrong with update");
     response.send({message: "Error - UPDATE"});
   }
@@ -184,10 +191,7 @@ const updateUser = async (request, response) => {
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 const deleteUser = async (request, response) => {
   console.log("inside deactivateUser");
-  console.log("request.body", request.body)
   const { email } = request.body;
-  // const { receivedEmail } = request.params.email;
-  console.log("emailreceived", email)
   const result = await checkUserEmail(email);
   if (result.id) {
     pool.query(
@@ -217,6 +221,9 @@ const deleteUser = async (request, response) => {
 }
 
 
+
+
+
 const readAllUsers = (request, response) => {
 console.log("inside getUsers");
   pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
@@ -229,80 +236,12 @@ console.log("inside getUsers");
 }
 
 
-// query user by name.
-// It's NOT case sensitive due to the 'toLowerCase' invoked function
-// it returns the name + email OR false, if it doesn't match
-const searchByName = (name) => {
-  const db = userDB;
-  for (let k in db)
-    if (db[k].name.toLowerCase() === name.toLowerCase())
-      return { name: db[k].name, email: db[k].email, id: db[k].id };
-
-  return false;
-}
-
-
-// query user by email
-// It's NOT case sensitive due to the 'toLowerCase' invoked function
-// it returns name + email OR false, if it doesn't match
-const searchByEmail = (email) => {
-  const db = userDB;
-  for (let k in db)
-    if (db[k].email.toLowerCase() === email.toLowerCase())
-      return { name: db[k].name, email: db[k].email, id: db[k].id } ;
-
-  return false;
-}
-
-
-// it gets the userId searching by their name
-// p.s.: it's a very poor criteria because it catchs the first register
-// with the specified name
-// this function is not supposed to be used, it's better handle the id instead name, but just in case.
-const getUserId = (name) => {
-  console.log("getuserID, name: ", name)
-
-  const db = userDB;
-  for (let k in db) {
-    if(db[k].name.toLowerCase() === name.toLowerCase())
-      return(db[k].id);
-  }
-  return false;
-}
-
-
-checkPassword = (user) => {
-  const { email, password } = user;
-  const db = userDB;
-  const userId = searchByEmail(email);
-  if (!userId) return "NoUser";
-
-  if(bcrypt.compareSync(password, db[userId.id].password)) {
-    // req.session.user_id = userId;
-  // if (db[userId.id].password === password)
-    return {status: true, id: userId.id};
-  }
-  return {status: false, id: userId.id};
-}
-
-
-logout = (email) => {
-  const user = searchByEmail(email);
-console.log("user= ", user);
-  recordLog(user.id, eventType.logout);
-  return (`${user.name} was logouted`);
-}
-
 
 module.exports = {
   readAllUsers,
   login,
 
   createUser,
-  searchByName,
-  searchByEmail,
   updateUser,
-  deleteUser,
-  getUserId,
-  logout
+  deleteUser
 }

@@ -5,17 +5,17 @@ let method = "";
 if (process.argv[2] === "1") {
   // create user with success
   url = 'http://0.0.0.0:3333/user/new';
-  data = {email: 'tao@email.com', password: 'tao', name: "TAO"};
+  data = {email: 'bob@email.com', password: 'bob', name: "Bob"};
 
 } else if (process.argv[2] === "2") {
   // create user with fail
   url = 'http://0.0.0.0:3333/user/new';
-  data = {email: 'tao@email.com', password: 'tao', name: "tao"};
+  data = {email: 'bob@email.com', password: 'tao', name: "tao"};
 
 } else if (process.argv[2] === "3") {
   // login user with success
   url = 'http://0.0.0.0:3333/login';
-  data = {email: 'tao@email.com', password: 'tao'};
+  data = {email: 'bob@email.com', password: 'bob'};
 
 } else if (process.argv[2] === "4") {
   // login user with fail
@@ -27,15 +27,15 @@ if (process.argv[2] === "1") {
   url = 'http://0.0.0.0:3333/login';
   data = {email: 'bob@email.com', password: ''};
 } else if (process.argv[2] === "6") {
-  // UPDATE
-  url = 'http://0.0.0.0:3333/user';
-  data = {id: 1, actualEmail: "tao@email.com", email: 'tao@email.com', name: 'tao', user_active:"true"};
-  method = "PUT";
-} else if (process.argv[2] === "7") {
   // DELETE/DEACTIVATE
   url = 'http://0.0.0.0:3333/user';
-  data = {email: 'tao@email.com'};
+  data = {email: 'bob@email.com'};
   method = "DELETE";
+} else if (process.argv[2] === "7") {
+  // UPDATE
+  url = 'http://0.0.0.0:3333/user';
+  data = {actualEmail: "bob@email.com", email: 'tao@email.com', name: 'tao', user_active:"true"};
+  method = "PUT";
 }
 
 fetch(url, {
