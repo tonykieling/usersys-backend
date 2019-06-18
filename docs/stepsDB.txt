@@ -17,6 +17,12 @@
 # INSERT INTO users (name, email, user_admin)  
 VALUES ('bob', 'bob@email.com', TRUE), ('sue','sue@email.com', FALSE);  
 
+# CREATE TABLE logs (  
+  ID SERIAL PRIMARY KEY,  
+  userID VARCHAR(40),  
+  date_time TIMESTAMP,  
+  event VARCHAR(70)  
+);  
 
 \c | Connect to a new database
 \dt | List all tables

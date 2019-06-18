@@ -31,7 +31,7 @@ checkUserEmail = email => {
           const user = { id, name, email, user_admin, user_active };
           const event = eventType.check_user_email_success;
           recordLog(user.id, event);
-          res(user)
+          res(user);
         } else {
           const event = eventType.check_user_email_fail;
           recordLog(email, event);

@@ -7,8 +7,7 @@ const { createUser,
         getUserId,
         login,
         logout } = require('./database/tools/crudUser.js');
-const { displayAllLogs,
-        logPerId } = require('./database/tools/crudLogs.js')
+const { allLogs } = require('./database/tools/crudLogs.js')
 const cors = require('cors');
 const app = express();
 const PORT = 3333;
@@ -79,11 +78,15 @@ app.put("/user", updateUser);
 app.delete('/user', deleteUser);
 
 
+// ##############################################################################################
+// ###################################  logs method  ############################################
+// ##############################################################################################
+// it gets all logs
+// 
+// 
+app.get('/logs', allLogs);
 
-// get all logs
-app.get('/showLogs', (req, res) => {
-  res.json()
-});
+
 
 
 // check all logs
