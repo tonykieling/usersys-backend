@@ -151,9 +151,7 @@ const updateUser = async (request, response) => {
   console.log("inside updateUser");
   // const { id, email, name, actualEmail, user_active, user_admin } = request.body;
   const receivedUser = request.body;
-  console.log("user", receivedUser)
   const result = await checkUserEmail(receivedUser.actualEmail);
-  console.log("result", result.id)
   if (result.id) {
     pool.query(
       'UPDATE users SET email = $1, name = $2, user_active = $3, user_admin = $4 WHERE id = $5 RETURNING id, email, name, user_active, user_admin',
