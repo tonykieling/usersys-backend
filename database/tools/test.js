@@ -29,8 +29,13 @@ if (process.argv[2] === "1") {
 } else if (process.argv[2] === "6") {
   // UPDATE
   url = 'http://0.0.0.0:3333/user';
-  data = {id: 1, actualEmail: "bob@email.com", email: 'bob@email.com', name: 'bob'};
+  data = {id: 1, actualEmail: "tao@email.com", email: 'tao@email.com', name: 'tao', user_active:"true"};
   method = "PUT";
+} else if (process.argv[2] === "7") {
+  // DELETE/DEACTIVATE
+  url = 'http://0.0.0.0:3333/user';
+  data = {email: 'tao@email.com'};
+  method = "DELETE";
 }
 
 fetch(url, {

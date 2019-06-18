@@ -76,17 +76,6 @@ app.post('/user/new', createUser);
 // in this route the app HAVE to receive name as params
 // and the data to change in the body
 app.put("/user", updateUser);
-// app.put('/users', (req, res) => {
-//   // const userId = req.params.name;
-//   const { userId, newName, newEmail } = req.body;
-//   const result = updateUser({ userId, user: { name: newName, email: newEmail } });
-  
-//   result.status ?
-//   res.send(result.message) :
-//   res.status(400).send(result.message);
-  
-//   // res.json(result); // it can return an whole object
-// });
 
 
 // it gets the user by their name
@@ -116,15 +105,16 @@ app.get('/users/email/:email', (req, res) => {
 
 // it deletes the user
 // in this route the app HAVE to receive name as params
-app.delete('/users/:name', (req, res) => {
-  const userId = req.params.name;
+app.delete('/user', deleteUser);
+// (req, res) => {
+//   const userId = req.params.name;
 
-  const result = deleteUser(userId);
+//   const result = deleteUser(userId);
 
-  result.status ?
-    res.send(result.message) :
-    res.status(400).send(result.message);
-});
+//   result.status ?
+//     res.send(result.message) :
+//     res.status(400).send(result.message);
+// });
 
 
 // get all logs

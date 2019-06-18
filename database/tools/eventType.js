@@ -9,7 +9,9 @@ const eventType = {
   delete_user_success       :  "8- User Deleted",
   delete_user_fail          :  "9- Delete User Fail",
   check_user_email_success  : "10- User email checked with success",
-  check_user_email_fail     : "11- User email checked with fail"
+  check_user_email_fail     : "11- User email checked with fail",
+  deactivate_user_success   : "12- User deactivated with succes",
+  deactivate_user_fail      : "13- User deactivated - fail",
 }
 
 module.exports = eventType;

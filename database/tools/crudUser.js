@@ -65,9 +65,6 @@ userQuery = user => {
         if (result.rowCount > 0) {
           const userFromQuery = result.rows[0];
           console.log("results=", userFromQuery.password, user.password)
-          // const a = (bcrypt.hashSync("aaa", 10))
-          // console.log((bcrypt.compareSync("aaa", a)))
-          // console.log(bcrypt.compareSync("tao", userFromQuery.password) ? "ok" : "problem")
           if(bcrypt.compareSync(user.password, userFromQuery.password)){
             res({
               id: userFromQuery.id,
@@ -152,12 +149,12 @@ login = async (request, response) => {
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 const updateUser = async (request, response) => {
   console.log("inside updateUser");
-  const { id, email, name, actualEmail } = request.body;
+  const { id, email, name, actualEmail, user_active, user_admin } = request.body;
   const result = await checkUserEmail(actualEmail);
   if (result.id) {
     pool.query(
-      'UPDATE users SET email = $1, name = $2, user_active = $3, user_admin = $4 WHERE id = $5 RETURNING email, name, user_active, user_admin',
-      [email, name, false, false, id], (error, result) => {
+      'UPDATE users SET email = $1, name = $2, user_active = $3, user_admin = $4 WHERE id = $5 RETURNING id, email, name, user_active, user_admin',
+      [email, name, true || user_active, user_admin || false, id], (error, result) => {
       try {
         if (error) {
           console.log(`updateUser error = ${error.message}`);
@@ -178,6 +175,44 @@ const updateUser = async (request, response) => {
   } else {
     console.log("something wrong with update");
     response.send({message: "Error - UPDATE"});
+  }
+}
+
+// actually this method deactivate the user by setting as false the field user_active
+// it only is performed by admin users
+// it receives user's email
+// it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
+const deleteUser = async (request, response) => {
+  console.log("inside deactivateUser");
+  console.log("request.body", request.body)
+  const { email } = request.body;
+  // const { receivedEmail } = request.params.email;
+  console.log("emailreceived", email)
+  const result = await checkUserEmail(email);
+  if (result.id) {
+    pool.query(
+      'UPDATE users SET user_active = $1 WHERE id = $2 RETURNING id, email, name, user_active, user_admin',
+      [false, result.id], (error, result) => {
+      try {
+        if (error) {
+          console.log(`deactivateUser error = ${error.message}`);
+          throw error;
+        }
+        const event = eventType.deactivate_user_success;
+        const user = result.rows[0];
+        recordLog(user.id, event);
+        response.send(user);
+        return;
+      } catch (err) {
+        const event = eventType.deactivate_user_fail;
+        recordLog(null, event);
+        console.log("deactivateUser error: ", err.message);
+        response.send({message: "Something BAD has happened! Try it again."});
+      }
+    });
+  } else {
+    console.log("something wrong with deactate user");
+    response.send({message: "Error - DEACTIVATE USER"});
   }
 }
 
@@ -258,26 +293,6 @@ console.log("user= ", user);
   return (`${user.name} was logouted`);
 }
 
-
-// actually this method deactivate the user
-// by setting as true the field deleted
-const deleteUser = (nameUser) => {
-  const userDbID = getUserId(nameUser); // it grabs user's db id
-
-  if (userDbID) {
-    const db = userDB;
-    const tempUser = db[userDbID].id;
-    // delete db[userDbID];   //old way, without consider login for deleted users
-    // new way is
-    db[userDbID].deleted = true;
-    recordLog(tempUser, eventType.delete_user);
-    return ({status: true,
-            message: `User ${nameUser} has been deleted successfully.`});
-  }
-
-  recordLog(null, eventType.delete_fail)
-  return {status: false, message: `User ${nameUser} not found.`};
-}
 
 module.exports = {
   readAllUsers,
