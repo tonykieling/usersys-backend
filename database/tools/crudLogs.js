@@ -37,15 +37,54 @@ recordLog = (userId, event) => {
 
 
 // it gets all logs
-// TODO: read logs basead in parameters such as, date/time, specific user
-// it receives admin's id
+// TODO: read logs basead in parameters such as, per date/time, for a specific user, etc
+// it receives admin's id, which is gonna record who is performing the query
 // it returns an object that holds all logs info
 allLogs = (request, response) => {
-  const user = request.params.id;
+  console.log("parameters", request.params)
+  const userAdmin = request.params.userAdmin;
   pool.query('SELECT * FROM logs ORDER BY date_time ASC', [], (error, result) => {
     try {
       if (error) {
         console.log("error on getting alllogs method");
+        throw error;
+      }
+      if (result.rowCount > 0) {
+        const message = result.rows;
+        const event = eventType.read_all_logins_success;
+        recordLog(userAdmin, event);
+        response.send(message);
+        return;
+      } else {
+        const event = eventType.read_all_logins_fail;
+        recordLog(userAdmin, event);
+        response.send({message: "`allLogs - NO logs`"});
+        return;
+      }
+    } catch (err) {
+      console.log("allLogs error: ", err.message);
+      const event = eventType.read_all_logins_fail;
+      recordLog(userAdmin, event);
+      response.send({message: "Something bad, try it again."});
+    }
+  });
+}
+
+
+//
+//
+//
+logPerUser = (request, response) => {
+  const userAdmin = request.params.userAdmin;
+  const user = request.query.user;
+  console.log("userAdmin", userAdmin)
+  console.log("user", user)
+  // response.send("OK");
+  // return;
+  pool.query('SELECT * FROM logs WHERE userid = $1 ORDER BY date_time ASC', [user], (error, result) => {
+    try {
+      if (error) {
+        console.log("error on getting logPerUser method");
         throw error;
       }
       if (result.rowCount > 0) {
@@ -57,11 +96,11 @@ allLogs = (request, response) => {
       } else {
         const event = eventType.read_all_logins_fail;
         recordLog(user, event);
-        response.send({message: "`allLogs - NO logs`"});
+        response.send({message: "`logPerUser - NO logs`"});
         return;
       }
     } catch (err) {
-      console.log("allLogs error: ", err.message);
+      console.log("logPerUser error: ", err.message);
       const event = eventType.read_all_logins_fail;
       recordLog(user, event);
       response.send({message: "Something bad, try it again."});
@@ -70,17 +109,8 @@ allLogs = (request, response) => {
 }
 
 
-
-// logPerId = (id) => {
-//   // getUserId('test')
-// //   console.log("id received is " + id);
-// // console.log(logsDB);
-//   const result = logsDB.filter(log => id === log.user_id);
-//   // console.log("result=>", result);
-//   return result;
-// }
-
 module.exports = {
   recordLog,
-  allLogs
+  allLogs,
+  logPerUser
 };

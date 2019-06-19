@@ -5,7 +5,7 @@ const { createUser,
         deleteUser,
         login,
         logout } = require('./database/tools/crudUser.js');
-const { allLogs } = require('./database/tools/crudLogs.js')
+const { allLogs, logPerUser } = require('./database/tools/crudLogs.js')
 const cors = require('cors');
 const app = express();
 const PORT = 3333;
@@ -80,7 +80,8 @@ app.delete('/user', deleteUser);
 // it gets all logs
 // 
 // 
-app.get('/logs/:id', allLogs);
+app.get('/logs/:userAdmin', allLogs);
+app.get('/log/:userAdmin', logPerUser);
 
 
 

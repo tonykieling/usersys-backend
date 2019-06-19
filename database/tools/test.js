@@ -38,19 +38,26 @@ if (process.argv[2] === "1") {
   method = "PUT";
 } else if (process.argv[2] === "8") {
   // read allLogs
-  // param = 1;
-  url = 'http://0.0.0.0:3333/logs/:par';
-  method = "GET";
+  url = 'http://0.0.0.0:3333/logs/2';
+  fetch(url, {
+    method: "GET",
+    headers:{
+      'Content-Type': 'application/json'
+    }
+    })
+    .then(res => res.json())
+    .then(console.log)
+    .catch(error => console.error('### Error:', error));
+    return;
 }
 
 fetch(url, {
   method: method || 'POST', // or 'PUT'
-  // (method !== "GET") ? {body: JSON.stringify(data))} : {null}, // data can be `string` or {object}!
+  body: JSON.stringify(data), // data can be `string` or {object}!
   headers:{
     'Content-Type': 'application/json'
   }
   })
   .then(res => res.json())
-  // .then(response => console.log('### Success:', JSON.stringify(response)))
   .then(console.log)
   .catch(error => console.error('### Error:', error));
