@@ -80,8 +80,8 @@ app.delete('/user', deleteUser);
 // it gets all logs
 // 
 // 
-app.get('/logs/:userAdmin', allLogs);
-app.get('/log/:userAdmin', logPerUser);
+app.get('/allLogs/:userAdmin', allLogs);
+app.get('/logPerUser/:userAdmin', logPerUser);
 
 
 

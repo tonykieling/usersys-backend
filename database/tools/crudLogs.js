@@ -1,7 +1,7 @@
 // const logsDB = require('../db/logsDB.js');
 // const randomId = require('./randomGen.js');
 // const { getUserId } = require('./crudUser.js');
-const Pool = require('pg').Pool;
+const { Pool } = require('pg');
 const eventType = require('./eventType.js');
 
 
@@ -36,11 +36,10 @@ recordLog = (userId, event) => {
 }
 
 
-// it gets all logs
-// TODO: read logs basead in parameters such as, per date/time, for a specific user, etc
-// it receives admin's id, which is gonna record who is performing the query
-// it returns an object that holds all logs info
-allLogs = (request, response) => {
+
+allLogsAndDate = (request, response) => {
+  // postman example1: http://0.0.0.0:3333/allLogs/1?date_start=2019-01-01&date_end=2019-06-18
+  // postman example: http://0.0.0.0:3333/allLogs/1
   console.log("parameters", request.params)
   const userAdmin = request.params.userAdmin;
   pool.query('SELECT * FROM logs ORDER BY date_time ASC', [], (error, result) => {
@@ -68,6 +67,52 @@ allLogs = (request, response) => {
       response.send({message: "Something bad, try it again."});
     }
   });
+}
+
+// it gets all logs
+// TODO: read logs basead in parameters such as, per date/time, for a specific user, etc
+// it receives admin's id, which is gonna record who is performing the query
+// it returns an object that holds all logs info
+allLogs = (request, response) => {
+  // postman example1: http://0.0.0.0:3333/allLogs/1?date_start=2019-01-01&date_end=2019-06-18
+  // postman example: http://0.0.0.0:3333/allLogs/1
+  const userAdmin = request.params.userAdmin;
+  const { date_start, date_end } = request.query;
+  handleQuery = (error, result) => {
+    try {
+      if (error) {
+        console.log("error on getting alllogs method");
+        throw error;
+      }
+      if (result.rowCount > 0) {
+        const message = result.rows;
+        const event = eventType.read_all_logins_success;
+        recordLog(userAdmin, event);
+        response.send(message);
+        return;
+      } else {
+        const event = eventType.read_all_logins_fail;
+        recordLog(userAdmin, event);
+        response.send({message: "`allLogs - NO logs`"});
+        return;
+      }
+    } catch (err) {
+      console.log("allLogs error: ", err.message);
+      const event = eventType.read_all_logins_fail;
+      recordLog(userAdmin, event);
+      response.send({message: "Something bad, try it again."});
+    }
+  }
+  
+  if (date_start) {
+    pool.query('SELECT * FROM logs WHERE date_time >= $1 AND date_time <= $2 ORDER BY date_time ASC', [date_start, date_end], (error, result) => {
+      handleQuery(error, result);
+    });
+  } else {
+    pool.query('SELECT * FROM logs ORDER BY date_time ASC', [], (error, result) => {
+      handleQuery(error, result);
+    });
+  }
 }
 
 
@@ -112,5 +157,6 @@ logPerUser = (request, response) => {
 module.exports = {
   recordLog,
   allLogs,
+  allLogsAndDate,
   logPerUser
 };
