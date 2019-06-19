@@ -134,8 +134,63 @@ logPerUser = async (request, response) => {
 }
 
 
+// it gets logs related to a specific log's type
+// it receives admin's id, which is gonna record who is performing the query
+// and also it's possible to receive a range date (start and end date)
+// it returns an object that holds all logs info for that specific log's type
+logPerType = async (request, response) => {
+  console.log("inside logPerType");
+  // postman example1: http://0.0.0.0:3333/logPerType/1?logType=3- User Logged&date_start=2019-01-01&date_end=2019-06-18
+  // postman example2: http://0.0.0.0:3333/logPerType/1?logType=3- User Logged
+
+  const userAdmin = request.params.userAdmin;
+  const { logType, date_start, date_end } = request.query;
+
+  console.log(`userAdmin= ${userAdmin}  -  logType= ${logType}`);
+  // response.send({message: logType});
+  // return;
+
+  // auxiliary function to proceede the query upon the data received from the app
+  handleQuery = (error, result) => {
+    try {
+      if (error) {
+        console.log("error on getting logPerType method");
+        throw error;
+      }
+      if (result.rowCount > 0) {
+        const message = result.rows;
+        const event = eventType.read_all_logins_success;
+        recordLog(userAdmin, event);
+        response.send(message);
+        return;
+      } else {
+        const event = eventType.read_all_logins_fail;
+        recordLog(userAdmin, event);
+        response.send({message: "`logPerType - NO logs`"});
+        return;
+      }
+    } catch (err) {
+      console.log("logPerType error: ", err.message);
+      const event = eventType.read_all_logins_fail;
+      recordLog(userAdmin, event);
+      response.send({message: "Something bad, try it again."});
+    }
+  }
+
+  if (date_start)
+    pool.query('SELECT * FROM logs WHERE event = $1 AND date_time >= $2 AND date_time <= $3 ORDER BY date_time ASC', [logType, date_start, date_end], (error, result) => {
+      handleQuery(error, result);
+    });
+  else
+    pool.query('SELECT * FROM logs WHERE event = $1 ORDER BY date_time ASC', [logType], (error, result) => {
+      handleQuery(error, result);
+    });
+}
+
+
 module.exports = {
   recordLog,
   allLogs,
-  logPerUser
+  logPerUser,
+  logPerType
 };

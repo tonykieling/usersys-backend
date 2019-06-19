@@ -13,7 +13,7 @@ const eventType = {
   deactivate_user_success   : "12- User deactivated - success",
   deactivate_user_fail      : "13- User deactivated - fail",
   read_all_logins_success   : "14- User read all logins - success",
-  read_all_logins_fail   : "14- User read all logins - fail",
+  read_all_logins_fail      : "15- User read all logins - fail",
 }
 
 module.exports = eventType;

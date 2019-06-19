@@ -5,7 +5,9 @@ const { createUser,
         deleteUser,
         login} = require('./database/tools/crudUser.js');
 
-const { allLogs, logPerUser } = require('./database/tools/crudLogs.js')
+const { allLogs, 
+        logPerUser,
+        logPerType } = require('./database/tools/crudLogs.js')
 const cors = require('cors');
 const app = express();
 const PORT = 3333;
@@ -82,42 +84,12 @@ app.delete('/user', deleteUser);
 // 
 app.get('/allLogs/:userAdmin', allLogs);
 app.get('/logPerUser/:userAdmin', logPerUser);
+app.get('/logPerType/:userAdmin', logPerType);
 
 
 
 
-// check all logs
-// app.get('/logs', (req, res) => {
-//   // console.log('checking all logs');
-//   // res.json(logs);
-//   res.json(displayAllLogs());
-// });
-
-
-// gets all logs based on the user's name
-// app.get('/logs/:name', (req, res) => {
-// console.log("name is " + req.params.name)  
-//   const userId = (getUserId(req.params.name));
-//   console.log("userId: ", userId);
-//   console.log(logPerId(userId));
-//   res.send(logPerId(userId));
-// });
-
-
-// logs in the user
-// app.post('/login', (req, res) => {
-//   console.log("login: ", req.body)
-//   if (login(req.body)) {
-//     req.session.userId = req.body.email;
-//     res.send("login is OK");
-//     return;
-//   }
-  
-//   res.status(400).send("Wrong use/password!");
-// });
-
-
-// logs the user out
+// logs the user logout
 // check how to implement this
 // ? is the control in the frontend side ?
 // ? what about energy or networking shortage ?
