@@ -1,5 +1,3 @@
-const userDB = require('../db/userDB.js');
-const randomID = require('./randomGen.js');
 const { recordLog } = require('./crudLogs.js');
 const eventType = require('./eventType.js');
 const bcrypt = require('bcrypt');
@@ -17,7 +15,8 @@ const pool = new Pool({
 // auxiliary function to check whether the user (EMAIL) exists in the database
 // it receives user email
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
-checkUserEmail = email => {
+checkUserByEmail= email => {
+  console.log("######inside checkuserbyemail", email)
   return new Promise((res, rej) => {
     pool.query('SELECT * FROM users WHERE email = $1', [email], (error, result) => {
       try {
@@ -26,7 +25,7 @@ checkUserEmail = email => {
           throw error;
         }
         if (result.rowCount > 0) {
-          console.log("checkUserEmail result===> ", result.rows[0].id);
+          console.log("checkUserByEmail result===> ", result.rows[0].id);
           const { id, name, email, user_admin, user_active } = result.rows[0];
           const user = { id, name, email, user_admin, user_active };
           const event = eventType.check_user_email_success;
@@ -35,13 +34,13 @@ checkUserEmail = email => {
         } else {
           const event = eventType.check_user_email_fail;
           recordLog(email, event);
-          res({message: `checkUserEmail - NO user to ${email}!`});
+          res({message: `checkUserByEmail - NO user to ${email}!`});
         }
       } catch (err) {
-        console.log("checkUserEmail error: ", err.message);
+        console.log("checkUserByEmail error: ", err.message);
         const event = eventType.check_user_email_fail;
         recordLog(null, event);
-        res({message: "Something BAD has happened! Try it again."});
+        rej({message: "Something BAD has happened! Try it again."});
       }
     });
   });
@@ -53,7 +52,7 @@ checkUserEmail = email => {
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 userQuery = user => {
   return new Promise((res, rej) => {
-    // the query can be replaced for checkUserEmail
+    // the query can be replaced for checkUserByEmail
     // tryed but no success because it needs to be async.
     // tryed async before user and inside Promise, but NO success
     pool.query('SELECT * FROM users WHERE email = $1', [user.email], (error, result) => {
@@ -114,7 +113,7 @@ createUser = async (request, response) => {
   const receivedUser = request.body;
   const { name, email, password } = receivedUser;
 
-  const result = await checkUserEmail(email);
+  const result = await checkUserByEmail(email);
   if (result.id) {
     const event = eventType.create_user_fail;
     recordLog(result.id, event);
@@ -147,11 +146,11 @@ createUser = async (request, response) => {
 // this methos updates user info
 // it receives user id and the data to be changed through request(with data inside body)
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
-const updateUser = async (request, response) => {
+updateUser = async (request, response) => {
   console.log("inside updateUser");
   // const { id, email, name, actualEmail, user_active, user_admin } = request.body;
   const receivedUser = request.body;
-  const result = await checkUserEmail(receivedUser.actualEmail);
+  const result = await checkUserByEmail(receivedUser.actualEmail);
   if (result.id) {
     pool.query(
       'UPDATE users SET email = $1, name = $2, user_active = $3, user_admin = $4 WHERE id = $5 RETURNING id, email, name, user_active, user_admin',
@@ -187,10 +186,10 @@ const updateUser = async (request, response) => {
 // it only is performed by admin users
 // it receives user's email
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
-const deleteUser = async (request, response) => {
+deleteUser = async (request, response) => {
   console.log("inside deactivateUser");
   const { email } = request.body;
-  const result = await checkUserEmail(email);
+  const result = await checkUserByEmail(email);
   if (result.id) {
     pool.query(
       'UPDATE users SET user_active = $1 WHERE id = $2 RETURNING id, email, name, user_active, user_admin',
@@ -219,10 +218,9 @@ const deleteUser = async (request, response) => {
 }
 
 
-
 module.exports = {
   login,
   createUser,
   updateUser,
   deleteUser
-}
+};

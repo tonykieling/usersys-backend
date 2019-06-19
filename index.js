@@ -3,8 +3,8 @@ const bodyParser = require('body-parser');
 const { createUser,
         updateUser,
         deleteUser,
-        login,
-        logout } = require('./database/tools/crudUser.js');
+        login} = require('./database/tools/crudUser.js');
+
 const { allLogs, logPerUser } = require('./database/tools/crudLogs.js')
 const cors = require('cors');
 const app = express();
