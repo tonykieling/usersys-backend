@@ -36,11 +36,16 @@ if (process.argv[2] === "1") {
   url = 'http://0.0.0.0:3333/user';
   data = {actualEmail: "bob@email.com", email: 'tao@email.com', name: 'tao', user_active:"true"};
   method = "PUT";
+} else if (process.argv[2] === "8") {
+  // read allLogs
+  // param = 1;
+  url = 'http://0.0.0.0:3333/logs/:par';
+  method = "GET";
 }
 
 fetch(url, {
   method: method || 'POST', // or 'PUT'
-  body: JSON.stringify(data), // data can be `string` or {object}!
+  // (method !== "GET") ? {body: JSON.stringify(data))} : {null}, // data can be `string` or {object}!
   headers:{
     'Content-Type': 'application/json'
   }

@@ -1,10 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { createUser,
-        readAllUsers,
         updateUser,
         deleteUser,
-        getUserId,
         login,
         logout } = require('./database/tools/crudUser.js');
 const { allLogs } = require('./database/tools/crudLogs.js')
@@ -52,8 +50,6 @@ app.use('/users', (req, res, next) => {
   next();
 });
 
-// it gets all users from the db
-app.get("/users", readAllUsers);
 
 
 // ##############################################################################################
@@ -84,27 +80,27 @@ app.delete('/user', deleteUser);
 // it gets all logs
 // 
 // 
-app.get('/logs', allLogs);
+app.get('/logs/:id', allLogs);
 
 
 
 
 // check all logs
-app.get('/logs', (req, res) => {
-  // console.log('checking all logs');
-  // res.json(logs);
-  res.json(displayAllLogs());
-});
+// app.get('/logs', (req, res) => {
+//   // console.log('checking all logs');
+//   // res.json(logs);
+//   res.json(displayAllLogs());
+// });
 
 
 // gets all logs based on the user's name
-app.get('/logs/:name', (req, res) => {
-console.log("name is " + req.params.name)  
-  const userId = (getUserId(req.params.name));
-  console.log("userId: ", userId);
-  console.log(logPerId(userId));
-  res.send(logPerId(userId));
-});
+// app.get('/logs/:name', (req, res) => {
+// console.log("name is " + req.params.name)  
+//   const userId = (getUserId(req.params.name));
+//   console.log("userId: ", userId);
+//   console.log(logPerId(userId));
+//   res.send(logPerId(userId));
+// });
 
 
 // logs in the user
@@ -124,11 +120,11 @@ console.log("name is " + req.params.name)
 // check how to implement this
 // ? is the control in the frontend side ?
 // ? what about energy or networking shortage ?
-app.post('/logout', (req, res) => {
-  console.log('logout: ', req.body);
-  req.session[req.body.email] = null;
-  res.send(logout(req.body.email))
-});
+// app.post('/logout', (req, res) => {
+//   console.log('logout: ', req.body);
+//   req.session[req.body.email] = null;
+//   res.send(logout(req.body.email))
+// });
 
 
 app.listen(PORT, () => console.log(`Service "USER CONTROL SYSTEM" running on port ${PORT}`));

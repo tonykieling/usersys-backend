@@ -220,25 +220,8 @@ const deleteUser = async (request, response) => {
 
 
 
-
-
-const readAllUsers = (request, response) => {
-console.log("inside getUsers");
-  pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
-    if (error) {
-      response.send("Something bad happened, try it again..")
-      throw error
-    }
-    response.status(200).json(results.rows);
-  });
-}
-
-
-
 module.exports = {
-  readAllUsers,
   login,
-
   createUser,
   updateUser,
   deleteUser
