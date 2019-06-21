@@ -2,6 +2,7 @@ const { Pool } = require('pg');
 const eventType = require('./eventType.js');
 const checkUserByEmail = require('./checkEmail');
 
+// "use strict";      //////////start using "use strict"
 
 const pool = new Pool({
   user: 'usersys',

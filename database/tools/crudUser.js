@@ -75,7 +75,7 @@ userQuery = user => {
           } else {
             res({message: "user/password wrong!"});
           }
-        } else throw error;
+        } else res({message: "### user/password wrong!"});
       } catch (err) {
         console.log("userQuery error: ", err.message);
         res({message: "Something BAD has happened! Try it again."});
@@ -92,6 +92,7 @@ userQuery = user => {
 login = async (request, response) => {
   console.log("inside login method");
   const receivedUser = request.body;
+  console.log("body::", request.body);
   const result = await userQuery(receivedUser);
   console.log("result-", result);
   if (result.id) {
@@ -109,7 +110,7 @@ login = async (request, response) => {
 // it receives user data to be created through request(with data inside body)
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 createUser = async (request, response) => {
-  console.log("inside createUser");
+  console.log("###inside createUser");
   const receivedUser = request.body;
   const { name, email, password } = receivedUser;
 

@@ -15,7 +15,7 @@ if (process.argv[2] === "1") {
 } else if (process.argv[2] === "3") {
   // login user with success
   url = 'http://0.0.0.0:3333/login';
-  data = {email: 'tao@email.com', password: 'taoo'};
+  data = {email: 'bob@email.com', password: 'bob'};
 
 } else if (process.argv[2] === "4") {
   // login user with fail
