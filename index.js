@@ -5,9 +5,12 @@ const { createUser,
         deleteUser,
         login} = require('./database/tools/crudUser.js');
 
-const { allLogs, 
+const { allLogs,
         logPerUser,
         logPerType } = require('./database/tools/crudLogs.js')
+
+const grantAdmin = require('./database/tools/admin.js')
+
 const cors = require('cors');
 const app = express();
 const PORT = 3333;
@@ -29,7 +32,7 @@ app.get('/', (req, res) => {
 // middleware
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
- 
+
 // parse application/json
 app.use(bodyParser.json());
 
@@ -59,7 +62,7 @@ app.use('/users', (req, res, next) => {
 // ##############################################################################################
 // it logs the user into the system
 // it suppose to receive email + paswword inside request.body
-// it return either user (id, name, email, user_active and user_admin) OR a fail message 
+// it return either user (id, name, email, user_active and user_admin) OR a fail message
 app.post("/login", login);
 
 // it creates the user account
@@ -80,8 +83,8 @@ app.delete('/user', deleteUser);
 // ###################################  logs method  ############################################
 // ##############################################################################################
 // it gets all logs
-// 
-// 
+//
+//
 app.get('/allLogs/:userAdmin', allLogs);
 app.get('/logPerUser/:userAdmin', logPerUser);
 app.get('/logPerType/:userAdmin', logPerType);
@@ -98,6 +101,12 @@ app.get('/logPerType/:userAdmin', logPerType);
 //   req.session[req.body.email] = null;
 //   res.send(logout(req.body.email))
 // });
+
+// ##############################################################################################
+// ###################################  ADMIN method  ############################################
+// ##############################################################################################
+// this method will allow ADMIN USER to grant a normal user ADMIN privileges
+app.post('/grant', grantAdmin);
 
 
 app.listen(PORT, () => console.log(`Service "USER CONTROL SYSTEM" running on port ${PORT}`));
