@@ -18,7 +18,7 @@ const pool = new Pool({
 recordLog = (userId, event) => {
   console.log('Inside record LOGS!!!\n user: ', userId, event)
   return new Promise((res, rej) => {
-    pool.query('INSERT INTO logs (userid, event, date_time) VALUES ($1, $2, to_timestamp($3))', 
+    pool.query('INSERT INTO logs (userid, event, created_at) VALUES ($1, $2, to_timestamp($3))', 
     [userId, event, (Date.now() / 1000.0)], (error, result) => {
       try {
         if (error) {
@@ -73,11 +73,11 @@ allLogs = (request, response) => {
   }
   
   if (date_start) {
-    pool.query('SELECT * FROM logs WHERE date_time >= $1 AND date_time <= $2 ORDER BY date_time ASC', [date_start, date_end], (error, result) => {
+    pool.query('SELECT * FROM logs WHERE created_at >= $1 AND created_at <= $2 ORDER BY created_at ASC', [date_start, date_end], (error, result) => {
       handleQuery(error, result);
     });
   } else {
-    pool.query('SELECT * FROM logs ORDER BY date_time ASC', [], (error, result) => {
+    pool.query('SELECT * FROM logs ORDER BY created_at ASC', [], (error, result) => {
       handleQuery(error, result);
     });
   }
@@ -125,11 +125,11 @@ logPerUser = async (request, response) => {
 
   const userId = await checkUserByEmail(userEmail).id;
   if (date_start)
-    pool.query('SELECT * FROM logs WHERE (userid = $1 OR userid = $2) AND date_time >= $3 AND date_time <= $4 ORDER BY date_time ASC', [userEmail, userId, date_start, date_end], (error, result) => {
+    pool.query('SELECT * FROM logs WHERE (userid = $1 OR userid = $2) AND created_at >= $3 AND created_at <= $4 ORDER BY created_at ASC', [userEmail, userId, date_start, date_end], (error, result) => {
       handleQuery(error, result);
     });
   else
-    pool.query('SELECT * FROM logs WHERE userid = $1 OR userid = $2 ORDER BY date_time ASC', [userId, userAdmin], (error, result) => {
+    pool.query('SELECT * FROM logs WHERE userid = $1 OR userid = $2 ORDER BY created_at ASC', [userId, userAdmin], (error, result) => {
       handleQuery(error, result);
     });
 }
@@ -179,11 +179,11 @@ logPerType = async (request, response) => {
   }
 
   if (date_start)
-    pool.query('SELECT * FROM logs WHERE event = $1 AND date_time >= $2 AND date_time <= $3 ORDER BY date_time ASC', [logType, date_start, date_end], (error, result) => {
+    pool.query('SELECT * FROM logs WHERE event = $1 AND created_at >= $2 AND created_at <= $3 ORDER BY created_at ASC', [logType, date_start, date_end], (error, result) => {
       handleQuery(error, result);
     });
   else
-    pool.query('SELECT * FROM logs WHERE event = $1 ORDER BY date_time ASC', [logType], (error, result) => {
+    pool.query('SELECT * FROM logs WHERE event = $1 ORDER BY created_at ASC', [logType], (error, result) => {
       handleQuery(error, result);
     });
 }
