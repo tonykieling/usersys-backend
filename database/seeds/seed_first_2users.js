@@ -15,10 +15,10 @@ exports.seed = function(knex, Promise) {
         },
         {
           name: 'Sue S.',
-          email: "bob@email.com",
+          email: "sue@email.com",
           password: bcrypt.hashSync("sue", 10),
-          user_admin: true,
-          user_active: false
+          user_admin: false,
+          user_active: true
         }
       ]);
     });
