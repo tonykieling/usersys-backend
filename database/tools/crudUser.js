@@ -136,7 +136,7 @@ createUser = async (request, response) => {
         return;
       } catch (err) {
         const event = eventType.create_user_fail;
-        recordLog(null, event);
+        recordLog("system", event);
         console.log("createUser error: ", err.message);
         response.send({message: "Something BAD has happened! Try it again."});
       }
@@ -151,36 +151,38 @@ updateUser = async (request, response) => {
   console.log("inside updateUser");
   // const { id, email, name, actualEmail, user_active, user_admin } = request.body;
   const receivedUser = request.body;
-  const result = await checkUserByEmail(receivedUser.actualEmail);
-  if (result.id) {
-    pool.query(
-      'UPDATE users SET email = $1, name = $2, user_active = $3, user_admin = $4 WHERE id = $5 RETURNING id, email, name, user_active, user_admin',
-      [receivedUser.email, receivedUser.name, receivedUser.user_active || false, receivedUser.user_admin || false, result.id],
-      (error, result) => {
-      try {
-        if (error) {
-          console.log(`updateUser error = ${error.message}`);
-          throw error;
-        }
-        const event = eventType.update_user_success;
-        const user = result.rows[0];
-        recordLog(user.id, event);
-        response.send(user);
-        return;
-      } catch (err) {
+    const result = await checkUserByEmail(receivedUser.actualEmail);
+    if (result.id) {
+      pool.query(
+        'UPDATE users SET email = $1, name = $2, user_active = $3, user_admin = $4 WHERE id = $5 RETURNING id, email, name, user_active, user_admin',
+        [receivedUser.email, receivedUser.name, receivedUser.user_active || true, receivedUser.user_admin || false, result.id],
+        (error, result) => {
+          try {
+            if (error) {
+              console.log(`updateUser error = ${error.message}`);
+              throw error;
+            }
+            const event = eventType.update_user_success;
+            const user = result.rows[0];
+            recordLog(user.id, event);
+            console.log("user to return after changes", user)
+            response.send(user);
+            return;
+          } catch (err) {
+            console.log("inside updateUser catch")
+            const event = eventType.create_user_fail;
+            recordLog(null, event);
+            console.log("updateUser error: ", err.message);
+            response.send({message: "Something BAD has happened! Try it again."});
+            return;
+          }
+        });
+      } else {
         const event = eventType.create_user_fail;
-        recordLog(null, event);
-        console.log("updateUser error: ", err.message);
-        response.send({message: "Something BAD has happened! Try it again."});
-        return;
+        recordLog("system", event);
+        console.log("something wrong with update");
+        response.send({message: "Error - UPDATE"});
       }
-    });
-  } else {
-    const event = eventType.create_user_fail;
-    recordLog(user.id, event);
-    console.log("something wrong with update");
-    response.send({message: "Error - UPDATE"});
-  }
 }
 
 // actually this method deactivate the user by setting as false the field user_active
