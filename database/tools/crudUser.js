@@ -63,8 +63,9 @@ userQuery = user => {
         }
         if (result.rowCount > 0) {
           const userFromQuery = result.rows[0];
-          console.log("results=", userFromQuery.password, user.password)
           if(bcrypt.compareSync(user.password, userFromQuery.password)){
+            const event = eventType.login_success;
+            recordLog(user.email, event);
             res({
               id: userFromQuery.id,
               email: userFromQuery.email,
@@ -73,11 +74,19 @@ userQuery = user => {
               userAdmin: userFromQuery.user_admin
             });
           } else {
+            const event = eventType.login_fail;
+            recordLog(user.email, event);
             res({message: "user/password wrong!"});
           }
-        } else res({message: "### user/password wrong!"});
+        } else {
+          const event = eventType.login_fail;
+          recordLog(user.email, event);
+          res({message: "### user/password wrong!"});
+        }
       } catch (err) {
         console.log("userQuery error: ", err.message);
+        const event = eventType.login_fail;
+        recordLog(user.email, event);
         res({message: "Something BAD has happened! Try it again."});
       }
     });

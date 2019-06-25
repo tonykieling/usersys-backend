@@ -14,6 +14,11 @@ const eventType = {
   deactivate_user_fail      : "13- User deactivated - fail",
   read_all_logins_success   : "14- User read all logins - success",
   read_all_logins_fail      : "15- User read all logins - fail",
+  seize_admin               : "16- Admin seized permission to another user",
+  seized_user               : "17- User seized permission from another Admin",
+  grant_admin               : "18- Admin granted permission to another user",
+  granted_user              : "19- User granted permission from another Admin",
+  changePermission_fail     : "20- Seize Admin Fail"
 }
 
 module.exports = eventType;

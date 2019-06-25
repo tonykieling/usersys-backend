@@ -3,13 +3,13 @@ const bodyParser = require('body-parser');
 const { createUser,
         updateUser,
         deleteUser,
-        login} = require('./database/tools/crudUser.js');
+        login } = require('./database/tools/crudUser.js');
 
 const { allLogs,
         logPerUser,
         logPerType } = require('./database/tools/crudLogs.js')
 
-const grantAdmin = require('./database/tools/admin.js')
+const { changePermission } = require('./database/tools/admin.js')
 
 const cors = require('cors');
 const app = express();
@@ -106,7 +106,7 @@ app.get('/logPerType/:userAdmin', logPerType);
 // ###################################  ADMIN method  ############################################
 // ##############################################################################################
 // this method will allow ADMIN USER to grant a normal user ADMIN privileges
-app.post('/grant', grantAdmin);
+app.post('/admin/changePermission', changePermission);
 
 
 app.listen(PORT, () => console.log(`Service "USER CONTROL SYSTEM" running on port ${PORT}`));
