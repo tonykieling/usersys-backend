@@ -11,7 +11,92 @@ const pool = new Pool({
   port: 5432,
 });
 
+// Search LOG tables based on EVENT
+// ============================================================
+searchEvent = async (request, response) => {
 
+  console.log("inside SEARCH EVENT", request.body);
+  const { etype } = request.body;
+
+  return new Promise((result, reject) => {
+    pool.query('SELECT * FROM logs WHERE event = $1', [etype], (error, result) => {
+      try {
+        if (error) {
+          //recordLog(null, event);
+          console.log("1) SEARCH by EVENT > with ERROR");
+          throw error;
+        }
+        if (result.rowCount > 0) {
+          console.log("2) SEARCH by EVENT ", result.rows);
+          // const { id, name, email, user_admin, user_active } = result.rows[0];
+          // const user = { id, name, email, user_admin, user_active };
+          // const event = eventType.check_user_email_success;
+          // recordLog(user.id, event);
+          response.send(result.rows);
+        } else {
+          // const event = eventType.check_user_email_fail;
+          // recordLog(email, event);
+          response.send({message: `3) SEARCH by EVENT - NO user to ${etype}!`});
+        }
+      } catch (err) {
+        console.log("4) SEARCH by EVENT error: ", err.message);
+        // const event = eventType.check_user_email_fail;
+        // recordLog(null, event);
+        reject.send({message: "Something BAD has happened! Try it again."});
+      }
+    });
+  });
+
+}
+
+  // Search LOG tables based on EMAIL
+  // ============================================================
+  searchEmail = async (req, res) => {
+
+    console.log("inside SEARCHEMAIL", request.body);
+    const { email } = request.body;
+
+    return new Promise((res, rej) => {
+      pool.query('SELECT * FROM logs WHERE email = $1', [email], (error, result) => {
+        try {
+          if (error) {
+            //recordLog(null, event);
+            console.log("1) SEARCH by EMAIL > with ERROR");
+            throw error;
+          }
+          if (result.rowCount > 0) {
+            console.log("2) SEARCH by EMAIL ", result.rows);
+            // const { id, name, email, user_admin, user_active } = result.rows[0];
+            // const user = { id, name, email, user_admin, user_active };
+            // const event = eventType.check_user_email_success;
+            // recordLog(user.id, event);
+            res(result.rows);
+          } else {
+            // const event = eventType.check_user_email_fail;
+            // recordLog(email, event);
+            res({message: `3) SEARCH by EMAIL - NO user to ${email}!`});
+          }
+        } catch (err) {
+          console.log("4) SEARCH by EMAIL error: ", err.message);
+          // const event = eventType.check_user_email_fail;
+          // recordLog(null, event);
+          rej({message: "Something BAD has happened! Try it again."});
+        }
+      });
+    });
+
+  }
+
+  // Get EVENT TYPES and return to frontend
+  // ============================================================
+  evenTypesGet = async (request, response) => {
+
+    // console.log('TYPES > ', eventType);
+    response.send(eventType);
+  }
+
+  // Admin asks to GRANT admin privileges to USER
+  // ============================================================
   grantAdmin = async (request, response) => {
 
     // Steps / Sub-functions
@@ -89,4 +174,9 @@ const pool = new Pool({
   }
 
 
-module.exports = grantAdmin;
+module.exports = {
+   grantAdmin,
+   evenTypesGet,
+   searchEmail,
+   searchEvent
+ };

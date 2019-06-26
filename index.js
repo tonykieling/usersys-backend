@@ -9,7 +9,9 @@ const { allLogs,
         logPerUser,
         logPerType } = require('./database/tools/crudLogs.js')
 
-const grantAdmin = require('./database/tools/admin.js')
+const { grantAdmin,
+        eventypes,
+        searchEmail } = require('./database/tools/admin.js')
 
 const cors = require('cors');
 const app = express();
@@ -107,6 +109,13 @@ app.get('/logPerType/:userAdmin', logPerType);
 // ##############################################################################################
 // this method will allow ADMIN USER to grant a normal user ADMIN privileges
 app.post('/grant', grantAdmin);
+
+// this method will allow SEARCH function to fetch the EVENTYPES from DB
+app.get('/admin/eventypes', evenTypesGet);
+
+// this method will allow SEARCH function to fetch the EVENTYPES from DB
+app.post('/admin/searchemail', searchEmail);
+app.post('/admin/searchevent', searchEvent);
 
 
 app.listen(PORT, () => console.log(`Service "USER CONTROL SYSTEM" running on port ${PORT}`));
