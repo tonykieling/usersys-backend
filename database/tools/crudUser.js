@@ -177,7 +177,7 @@ updateUser = async (request, response) => {
             return;
           } catch (err) {
             console.log("inside updateUser catch")
-            const event = eventType.create_user_fail;
+            const event = eventType.update_user_fail;
             recordLog(null, event);
             console.log("updateUser error: ", err.message);
             response.send({message: "Something BAD has happened! Try it again."});
