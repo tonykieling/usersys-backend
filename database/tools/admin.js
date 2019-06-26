@@ -11,7 +11,7 @@ const pool = new Pool({
 });
 
 changePermission = async (request, response) => {
-  console.log("inside changePermission, req.body:", request.body);
+  console.log("### inside changePermission");
   
   // Steps / Sub-functions
   // ============================================================================
@@ -27,24 +27,32 @@ changePermission = async (request, response) => {
   // 1. checkEmail > checks if user to be granted exists
   // ===============================================================
   const checkedUser = await checkUserByEmail(user);
-  console.log('after check USER email > ', checkedUser)
+  // console.log('after check USER email > checkedUser:', checkedUser, "action: ", action)
+  if (((action.toLowerCase() === "grant") && checkedUser.user_admin) ||
+      ((action.toLowerCase() === "seize") && (!checkedUser.user_admin))) {
+        response.send({message: "User has already have the required permission"});
+        return;
+      }
 
   // verifies if MESSAGE attribute is inside the response object
   // if there is a message than return ERROR MESSAGE
   if ( 'message' in checkedUser){
     console.log("1) something wrong with update");
     response.send({message: "Something wrong with Seize Admin's permission. Try it again."});
-
-  } else{
+    return;
+  } else {
       // 2. login > checks if admin password is valid to authorize the modification
       // ===============================================================
         const checkAdmin = await userQuery({email: adminEmail, password: adminPassword});
-        if ( 'message' in checkAdmin){
+        if (('message' in checkAdmin) || (!checkAdmin.userAdmin)){
+          console.log("message:", checkAdmin.message, "OOORR ", checkAdmin.userAdmin)
           // ADMIN WRONG PASSWORD - return error message  // login has already recorded in the userQuery method
-          console.log(">>>>", checkAdmin.message);
-          response.send(checkAdmin);
+          const event = eventType.changePermission_fail;
+          recordLog(adminEmail, event);
+          response.send({message: "Admin permission with problem. Try it again."});
+          return;
         }
-        else{
+        else {
           const adminPermission = (action.toLowerCase() === "seize") ? false : true;
           // 3. grant/seize > changes the user type to ADMIN
           pool.query(
@@ -75,9 +83,9 @@ changePermission = async (request, response) => {
               response.send({message: "Something BAD has happened! Try it again."});
               return;
             }
-          });   // END OF POOL
-        } // END OF ELSE > admin pass OK
-      }  // END OF ELSE > user EXISTS in DB
+          });
+        }
+      } 
 }
 
 

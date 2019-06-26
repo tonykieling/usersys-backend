@@ -16,7 +16,7 @@ const pool = new Pool({
 // it receives user email
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 checkUserByEmail= email => {
-  console.log("######inside checkuserbyemail", email)
+  console.log("### inside checkuserbyemail");
   return new Promise((res, rej) => {
     pool.query('SELECT * FROM users WHERE email = $1', [email], (error, result) => {
       try {
@@ -25,7 +25,6 @@ checkUserByEmail= email => {
           throw error;
         }
         if (result.rowCount > 0) {
-          console.log("checkUserByEmail result===> ", result.rows[0].id);
           const { id, name, email, user_admin, user_active } = result.rows[0];
           const user = { id, name, email, user_admin, user_active };
           const event = eventType.check_user_email_success;
@@ -51,6 +50,7 @@ checkUserByEmail= email => {
 // it receives user email and password inside user variable
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 userQuery = user => {
+  console.log("### inside userQuery");
   return new Promise((res, rej) => {
     // the query can be replaced for checkUserByEmail
     // tryed but no success because it needs to be async.
@@ -99,11 +99,9 @@ userQuery = user => {
 // it receives user data to be logged through request(with data inside body)
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 login = async (request, response) => {
-  console.log("inside login method");
+  console.log("### inside login method");
   const receivedUser = request.body;
-  console.log("body::", request.body);
   const result = await userQuery(receivedUser);
-  console.log("result-", result);
   if (result.id) {
     const event = eventType.login_success;
     recordLog(result.id, event);
@@ -119,7 +117,7 @@ login = async (request, response) => {
 // it receives user data to be created through request(with data inside body)
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 createUser = async (request, response) => {
-  console.log("###inside createUser");
+  console.log("### inside createUser");
   const receivedUser = request.body;
   const { name, email, password } = receivedUser;
 
@@ -157,7 +155,7 @@ createUser = async (request, response) => {
 // it receives user id and the data to be changed through request(with data inside body)
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 updateUser = async (request, response) => {
-  console.log("inside updateUser");
+  console.log("### inside updateUser");
   // const { id, email, name, actualEmail, user_active, user_admin } = request.body;
   const receivedUser = request.body;
     const result = await checkUserByEmail(receivedUser.actualEmail);
@@ -199,7 +197,7 @@ updateUser = async (request, response) => {
 // it receives user's email
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 deleteUser = async (request, response) => {
-  console.log("inside deactivateUser");
+  console.log("### inside deactivateUser");
   const { email } = request.body;
   const result = await checkUserByEmail(email);
   if (result.id) {

@@ -16,7 +16,7 @@ const pool = new Pool({
 // 
 // it doesnt return anything, only records
 recordLog = (userId, event) => {
-  console.log('Inside record LOGS!!!\n user: ', userId, event)
+  // console.log('Inside record LOGS!!!\n user: ', userId, event)
   return new Promise((res, rej) => {
     pool.query('INSERT INTO logs (userid, event, created_at) VALUES ($1, $2, to_timestamp($3))', 
     [userId, event, (Date.now() / 1000.0)], (error, result) => {
@@ -89,7 +89,7 @@ allLogs = (request, response) => {
 // and also it's possible to receive a range date (start and end date)
 // it returns an object that holds all logs info for that specific user
 logPerUser = async (request, response) => {
-  console.log("inside logPerUser");
+  // console.log("inside logPerUser");
   // postman example1: http://0.0.0.0:3333/logPerUser/1?userEmail=tao@email.com&date_start=2019-01-01&date_end=2019-06-18
   // postman example2: http://0.0.0.0:3333/logPerUser/1?userEmail=tao@email.com
 
@@ -140,7 +140,7 @@ logPerUser = async (request, response) => {
 // and also it's possible to receive a range date (start and end date)
 // it returns an object that holds all logs info for that specific log's type
 logPerType = async (request, response) => {
-  console.log("inside logPerType");
+  // console.log("inside logPerType");
   // postman example1: http://0.0.0.0:3333/logPerType/1?logType=3- User Logged&date_start=2019-01-01&date_end=2019-06-18
   // postman example2: http://0.0.0.0:3333/logPerType/1?logType=3- User Logged
 
