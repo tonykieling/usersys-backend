@@ -46,7 +46,6 @@ searchEvent = async (request, response) => {
       }
     });
   });
-
 }
 
   // Search LOG tables based on EMAIL
@@ -84,7 +83,6 @@ searchEvent = async (request, response) => {
         }
       });
     });
-
   }
 
   // Get EVENT TYPES and return to frontend
@@ -132,54 +130,59 @@ changePermission = async (request, response) => {
   } else {
       // 2. login > checks if admin password is valid to authorize the modification
       // ===============================================================
-        const checkAdmin = await userQuery({email: adminEmail, password: adminPassword});
-        if (('message' in checkAdmin) || (!checkAdmin.userAdmin)){
-          console.log("message:", checkAdmin.message, "OOORR ", checkAdmin.userAdmin)
-          // ADMIN WRONG PASSWORD - return error message  // login has already recorded in the userQuery method
-          const event = eventType.changePermission_fail;
-          recordLog(adminEmail, event);
-          response.send({message: "Admin permission with problem. Try it again."});
-          return;
-        }
-        else {
-          const adminPermission = (action.toLowerCase() === "seize") ? false : true;
-          // 3. grant/seize > changes the user type to ADMIN
-          pool.query(
-            'UPDATE users SET user_admin = $1 WHERE id = $2 RETURNING id, email, name, user_active, user_admin',
-            [adminPermission, checkedUser.id], (error, result) => {
-            try {
-              if (error) {
-                console.log(`updateUser error = ${error.message}`);
-                throw error;
-              }
-              if (adminPassword) {
-                const event1 = eventType.grant_admin;
-                const event2 = eventType.granted_user;
-                recordLog(adminEmail, event1);
-                recordLog(user, event2);
-              } else {
-                const event1 = eventType.seize_admin;
-                const event2 = eventType.seized_user;
-                recordLog(adminEmail, event1);
-                recordLog(user, event2);
-              }
-              const updatedUser = result.rows[0];
-              response.send(updatedUser);
-              return;
-            } catch (err) {
-              const event = eventType.changePermission_fail;
-              recordLog("system", event);
-              response.send({message: "Something BAD has happened! Try it again."});
-              return;
+      const checkAdmin = await userQuery({email: adminEmail, password: adminPassword});
+      if (('message' in checkAdmin) || (!checkAdmin.userAdmin)){
+        const event = eventType.changePermission_fail;
+        recordLog(adminEmail, event);
+        response.send({message: "Admin permission with problem. Try it again."});
+        return;
+      }
+      else {
+        const adminPermission = (action.toLowerCase() === "seize") ? false : true;
+        // 3. grant/seize > changes the user type to ADMIN
+        pool.query(
+          'UPDATE users SET user_admin = $1 WHERE id = $2 RETURNING id, email, name, user_active, user_admin',
+          [adminPermission, checkedUser.id], (error, result) => {
+          try {
+            if (error) {
+              console.log(`updateUser error = ${error.message}`);
+              throw error;
             }
-          });
-        }
-      } 
+            if (adminPassword) {
+              const event1 = eventType.grant_admin;
+              const event2 = eventType.granted_user;
+              recordLog(adminEmail, event1);
+              recordLog(user, event2);
+            } else {
+              const event1 = eventType.seize_admin;
+              const event2 = eventType.seized_user;
+              recordLog(adminEmail, event1);
+              recordLog(user, event2);
+            }
+            const updatedUser = result.rows[0];
+            response.send(updatedUser);
+            return;
+          } catch (err) {
+            const event = eventType.changePermission_fail;
+            recordLog("system", event);
+            response.send({message: "Something BAD has happened! Try it again."});
+            return;
+          }
+        });
+      }
+    } 
+}
+
+listUsers = (request, response) => {
+  console.log("### inside listUsers");
+  console.log("body", request.body);
+  response.send({message: "this is listUsers method"});
 }
 
 module.exports = {
    evenTypesGet,
    searchEmail,
    searchEvent,
-   changePermission
+   changePermission,
+   listUsers
  };

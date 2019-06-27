@@ -11,7 +11,8 @@ const { allLogs,
 
 const { changePermission,
         evenTypesGet,
-        searchEmail } = require('./database/tools/admin.js')
+        searchEmail,
+        listUsers } = require('./database/tools/admin.js')
 
 const cors = require('cors');
 const app = express();
@@ -116,6 +117,9 @@ app.get('/admin/eventypes', evenTypesGet);
 // this method will allow SEARCH function to fetch the EVENTYPES from DB
 app.post('/admin/searchemail', searchEmail);
 app.post('/admin/searchevent', searchEvent);
+
+// method to list users and admins
+app.post('/admin/listUsers', listUsers);
 
 
 app.listen(PORT, () => console.log(`Service "USER CONTROL SYSTEM" running on port ${PORT}`));
