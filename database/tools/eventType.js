@@ -18,7 +18,9 @@ const eventType = {
   seized_user               : "17- User seized permission from another Admin",
   grant_admin               : "18- Admin granted permission to another user",
   granted_user              : "19- User granted permission from another Admin",
-  changePermission_fail     : "20- Seize Admin Fail"
+  changePermission_fail     : "20- Seize Admin Fail",
+  change_password_sucess    : "21- Password changed with success",
+  change_password_fail      : "21- Password changed with FAIL"
 }
 
 module.exports = eventType;
