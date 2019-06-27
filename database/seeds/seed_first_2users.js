@@ -19,6 +19,20 @@ exports.seed = function(knex, Promise) {
           password: bcrypt.hashSync("sue", 10),
           user_admin: false,
           user_active: true
+        },
+        {
+          name: 'Jon',
+          email: "jon@email.com",
+          password: bcrypt.hashSync("jon", 10),
+          user_admin: false,
+          user_active: true
+        },
+        {
+          name: 'Bet',
+          email: "bet@email.com",
+          password: bcrypt.hashSync("bet", 10),
+          user_admin: true,
+          user_active: true
         }
       ]);
     });

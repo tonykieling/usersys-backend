@@ -21,7 +21,6 @@ checkUserByEmail= email => {
     pool.query('SELECT * FROM users WHERE email = $1', [email], (error, result) => {
       try {
         if (error) {
-          recordLog(null, event);
           throw error;
         }
         if (result.rowCount > 0) {

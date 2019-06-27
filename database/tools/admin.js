@@ -22,7 +22,6 @@ searchEvent = async (request, response) => {
     pool.query('SELECT * FROM logs WHERE event = $1', [etype], (error, result) => {
       try {
         if (error) {
-          //recordLog(null, event);
           console.log("1) SEARCH by EVENT > with ERROR");
           throw error;
         }
@@ -175,8 +174,50 @@ changePermission = async (request, response) => {
 
 listUsers = (request, response) => {
   console.log("### inside listUsers");
-  console.log("body", request.body);
-  response.send({message: "this is listUsers method"});
+  const data = request.body;
+  console.log("data:", data);
+  let dataQuery = "";
+  if (!data.userType) {
+    console.log("query no userType");
+    const userParam = (data.user) ?
+      ` WHERE name = '${data.user}' OR email = '${data.user}' OR name LIKE '%${data.user}%' OR email LIKE '%${data.user}%'` :
+      "";
+    dataQuery = `SELECT id, name, email, user_active, user_admin FROM users ${userParam}`;
+    console.log("dataQuery", dataQuery)
+  } else {
+    let typeParam = "";
+    if (data.userType === "admin")
+      typeParam = "WHERE user_admin = 'true'";
+    else
+      typeParam = "WHERE user_admin = 'false'";
+    const userParam = (data.user) ? ` AND (name = '${data.user}' OR email = '${data.user}')` : "";
+    dataQuery = `SELECT id, name, email, user_active, user_admin FROM users ${typeParam} ${userParam}`;
+    console.log("querying for ADMIN = ", dataQuery);
+  }
+
+  pool.query(dataQuery, [], (error, result) => {
+    try {
+      if (error) {
+        throw error;
+      }
+      if (result.rowCount > 0) {
+        const event = eventType.listUser_success;
+        recordLog(data.userAdmin, event);
+        console.log(result.rows)
+        response.send(result.rows);
+        return;
+      } else {
+        const event = eventType.listUser_fail;
+        recordLog(data.userAdmin, event);
+        response.send({message: `lisUsers - NO users to list`});
+      }
+    } catch (err) {
+      console.log("listuser error: ", err.message);
+      const event = eventType.listUser_fail;
+      recordLog("system", event);
+      response.send({message: "Something BAD has happened! Try it again."});
+    }
+  });
 }
 
 module.exports = {
