@@ -190,7 +190,9 @@ listUsers = (request, response) => {
       typeParam = "WHERE user_admin = 'true'";
     else
       typeParam = "WHERE user_admin = 'false'";
-    const userParam = (data.user) ? ` AND (name = '${data.user}' OR email = '${data.user}')` : "";
+    const userParam = (data.user) ?
+      ` AND (name = '${data.user}' OR email = '${data.user}' OR name LIKE '%${data.user}%' OR email LIKE '%${data.user}%')` :
+      "";
     dataQuery = `SELECT id, name, email, user_active, user_admin FROM users ${typeParam} ${userParam}`;
     console.log("querying for ADMIN = ", dataQuery);
   }
