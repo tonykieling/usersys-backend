@@ -13,6 +13,43 @@ exports.seed = function(knex, Promise) {
         {
           event: event.create_user_success,
           userid: 2
+        },
+
+        {
+          event: event.create_user_success,
+          userid: 3
+        },
+        {
+          event: event.create_user_success,
+          userid: 4
+        },
+        {
+          event: event.create_user_success,
+          userid: 5
+        },
+        {
+          event: event.create_user_success,
+          userid: 6
+        },
+        {
+          event: event.create_user_success,
+          userid: 7
+        },
+        {
+          event: event.create_user_success,
+          userid: 8
+        },
+        {
+          event: event.create_user_success,
+          userid: 9
+        },
+        {
+          event: event.create_user_success,
+          userid: 10
+        },
+        {
+          event: event.create_user_success,
+          userid: 11
         }
       ]);
     });
