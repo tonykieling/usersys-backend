@@ -157,34 +157,37 @@ updateUser = async (request, response) => {
   console.log("### inside updateUser");
   // const { id, email, name, actualEmail, user_active, user_admin } = request.body;
   const receivedUser = request.body;
-    const result = await checkUserByEmail(receivedUser.actualEmail);
+    const result = await checkUserByEmail(receivedUser.email);
     if (result.id) {
-      console.log("receivedUser", receivedUser)
       if ("newPassword" in receivedUser) {
-        // response.send({messagePassword: "great, wanna change passwd"});
-        // return;
-        pool.query(
-          'UPDATE users SET password = $1 WHERE id = $2 RETURNING id, email, name, user_active, user_admin',
-          [bcrypt.hashSync(receivedUser.newPassword, 10) , result.id],
-          (error, result) => {
-            try {
-              if (error) {
-                console.log(`updateUser error = ${error.message}`);
-                throw error;
+        const loginUser = await userQuery(receivedUser);
+        if ("email" in loginUser) {
+          pool.query(
+            'UPDATE users SET password = $1 WHERE id = $2 RETURNING id, email, name, user_active, user_admin',
+            [bcrypt.hashSync(receivedUser.newPassword, 10) , result.id],
+            (error, result) => {
+              try {
+                if (error) {
+                  console.log(`updateUser error = ${error.message}`);
+                  throw error;
+                }
+                const event = eventType.change_password_sucess;
+                const user = result.rows[0];
+                recordLog(user.id, event);
+                response.send(user);
+                return;
+              } catch (err) {
+                const event = eventType.change_password_fail;
+                recordLog(null, event);
+                console.log("updateUser error: ", err.message);
+                response.send({message: "Something BAD has happened! Try it again."});
+                return;
               }
-              const event = eventType.change_password_sucess;
-              const user = result.rows[0];
-              recordLog(user.id, event);
-              response.send(user);
-              return;
-            } catch (err) {
-              const event = eventType.change_password_fail;
-              recordLog(null, event);
-              console.log("updateUser error: ", err.message);
-              response.send({messagePassword: "Something BAD has happened! Try it again."});
-              return;
-            }
-          });        
+            });
+          } else {
+            response.send(loginUser);
+            return;
+          }
       } else {
         pool.query(
           'UPDATE users SET email = $1, name = $2, user_active = $3, user_admin = $4 WHERE id = $5 RETURNING id, email, name, user_active, user_admin',
