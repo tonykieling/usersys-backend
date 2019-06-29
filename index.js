@@ -116,6 +116,7 @@ app.get('/admin/eventypes', evenTypesGet);
 // this method will allow SEARCH function to fetch the EVENTYPES from DB
 app.post('/admin/searchemail', searchEmail);
 app.post('/admin/searchevent', searchEvent);
+app.post('/admin/searchdate', searchDate);
 
 
 app.listen(PORT, () => console.log(`Service "USER CONTROL SYSTEM" running on port ${PORT}`));

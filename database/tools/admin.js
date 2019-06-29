@@ -46,45 +46,63 @@ searchEvent = async (request, response) => {
       }
     });
   });
-
 }
-
   // Search LOG tables based on EMAIL
   // ============================================================
-  searchEmail = async (req, res) => {
+  searchEmail = async (request, response) => {
 
     console.log("inside SEARCHEMAIL", request.body);
     const { email } = request.body;
 
-    return new Promise((res, rej) => {
-      pool.query('SELECT * FROM logs WHERE email = $1', [email], (error, result) => {
+    return new Promise((result, reject) => {
+      pool.query('SELECT * FROM logs WHERE userid = $1', [email], (error, result) => {
         try {
-          if (error) {
-            //recordLog(null, event);
-            console.log("1) SEARCH by EMAIL > with ERROR");
-            throw error;
-          }
-          if (result.rowCount > 0) {
-            console.log("2) SEARCH by EMAIL ", result.rows);
-            // const { id, name, email, user_admin, user_active } = result.rows[0];
-            // const user = { id, name, email, user_admin, user_active };
-            // const event = eventType.check_user_email_success;
-            // recordLog(user.id, event);
-            res(result.rows);
-          } else {
-            // const event = eventType.check_user_email_fail;
-            // recordLog(email, event);
-            res({message: `3) SEARCH by EMAIL - NO user to ${email}!`});
-          }
+              if (error) {
+                  console.log("1) SEARCH by EMAIL > with ERROR");
+                  throw error;
+              }
+              if (result.rowCount > 0) {
+                  console.log("2) SEARCH by EMAIL ", result.rows);
+                  response.send(result.rows);
+              } else {
+                  response.send({message: `3) SEARCH by EMAIL - NO user to ${email}!`});
+              }
         } catch (err) {
-          console.log("4) SEARCH by EMAIL error: ", err.message);
-          // const event = eventType.check_user_email_fail;
-          // recordLog(null, event);
-          rej({message: "Something BAD has happened! Try it again."});
+              console.log("4) SEARCH by EMAIL error: ", err.message);
+              reject.send({message: "Something BAD has happened! Try it again."});
         }
       });
     });
+  }
 
+  // Search LOG tables based on DATE
+  // ============================================================
+  searchDate = async (request, response) => {
+
+    console.log("inside DATE EMAIL", request.body);
+    const { start, end } = request.body;
+
+    return new Promise((result, reject) => {
+      // SELECT * FROM logs WHERE created_at between '2019-06-28 00:00' and '2019-06-28 23:59';
+      //pool.query('SELECT * FROM logs WHERE created_at = $1', [date], (error, result) => {
+      pool.query('SELECT * FROM logs WHERE created_at between $1 and $2', [start, end], (error, result) => {
+        try {
+              if (error) {
+                  console.log("1) SEARCH by DATE > with ERROR");
+                  throw error;
+              }
+              if (result.rowCount > 0) {
+                  console.log("2) SEARCH by DATE ", result.rows);
+                  response.send(result.rows);
+              } else {
+                  response.send({message: `3) SEARCH by DATE - NO user logs for dates between ${start} and ${end}!`});
+              }
+        } catch (err) {
+              console.log("4) SEARCH by DATE error: ", err.message);
+              reject.send({message: "Something BAD has happened! Try it again."});
+        }
+      });
+    });
   }
 
   // Get EVENT TYPES and return to frontend
@@ -102,13 +120,13 @@ searchEvent = async (request, response) => {
 
 changePermission = async (request, response) => {
   console.log("### inside changePermission");
-  
+
   // Steps / Sub-functions
   // ============================================================================
   // 1. checkEmail > checks if user to be granted exists
   // 2. login > checks if admin password is valid to authorize the modification
   // 3. action > changes the user type to ADMIN or NORMAL
-  
+
   const { user, adminEmail, adminPassword, action } = request.body;
   // if (user === admin) response.send({message: "Admins cannot seize permisson from theirselves"});
   // response.send({message: "returning from seizeADMIN"});
@@ -174,12 +192,13 @@ changePermission = async (request, response) => {
             }
           });
         }
-      } 
+      }
 }
 
 module.exports = {
    evenTypesGet,
    searchEmail,
    searchEvent,
+   searchDate,
    changePermission
  };
