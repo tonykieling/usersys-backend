@@ -5,11 +5,11 @@ const bcrypt = require('bcrypt');
 const Pool = require('pg').Pool;
 
 const pool = new Pool({
-  user: 'usersys',
-  host: 'localhost',
-  database: 'usersys',
-  password: 'usersys',
-  port: 5432,
+  user      : 'usersys',
+  host      : 'localhost',
+  database  : 'usersys',
+  password  : 'usersys',
+  port      : 5432,
 });
 
 // auxiliary function to check whether the user (EMAIL) exists in the database
@@ -157,67 +157,88 @@ updateUser = async (request, response) => {
   console.log("### inside updateUser");
   // const { id, email, name, actualEmail, user_active, user_admin } = request.body;
   const receivedUser = request.body;
-    const result = await checkUserByEmail(receivedUser.email);
-    if (result.id) {
-      if ("newPassword" in receivedUser) {
-        const loginUser = await userQuery(receivedUser);
-        if ("email" in loginUser) {
-          pool.query(
-            'UPDATE users SET password = $1 WHERE id = $2 RETURNING id, email, name, user_active, user_admin',
-            [bcrypt.hashSync(receivedUser.newPassword, 10) , result.id],
-            (error, result) => {
-              try {
-                if (error) {
-                  console.log(`updateUser error = ${error.message}`);
-                  throw error;
-                }
-                const event = eventType.change_password_sucess;
-                const user = result.rows[0];
-                recordLog(user.id, event);
-                response.send(user);
-                return;
-              } catch (err) {
-                const event = eventType.change_password_fail;
-                recordLog(null, event);
-                console.log("updateUser error: ", err.message);
-                response.send({message: "Something BAD has happened! Try it again."});
-                return;
-              }
-            });
-          } else {
-            response.send(loginUser);
-            return;
-          }
-      } else {
+  console.log("receivedUser", receivedUser);
+  const result = await checkUserByEmail(receivedUser.email);
+  if (result.id) {
+    if ("newPassword" in receivedUser) {
+      const loginUser = (receivedUser.adminEmail) ? {email: receivedUser.adminEmail} : await userQuery(receivedUser);
+      if ("email" in loginUser) {
+        console.log({message: "newpassword"});
+        response.send({message: "OK"});
+        return;
         pool.query(
-          'UPDATE users SET email = $1, name = $2, user_active = $3, user_admin = $4 WHERE id = $5 RETURNING id, email, name, user_active, user_admin',
-          [receivedUser.email, receivedUser.name, receivedUser.user_active || true, receivedUser.user_admin || false, result.id],
+          'UPDATE users SET password = $1 WHERE id = $2 RETURNING id, email, name, user_active, user_admin',
+          [bcrypt.hashSync(receivedUser.newPassword, 10) , result.id],
           (error, result) => {
             try {
               if (error) {
                 console.log(`updateUser error = ${error.message}`);
                 throw error;
               }
-              const event = eventType.update_user_success;
+              const event = eventType.change_password_sucess;
               const user = result.rows[0];
-              recordLog(user.id, event);
+              recordLog(user.email, event);
+              if ("adminEmail" in receivedUser)
+                recordLog(receivedUser.adminEmail, eventType.admin_change_user_data_success);
               response.send(user);
               return;
             } catch (err) {
-              const event = eventType.update_user_fail;
+              const event = eventType.change_password_fail;
               recordLog(null, event);
+              if ("adminEmail" in receivedUser)
+                recordLog(receivedUser.adminEmail, eventType.admin_change_user_data_fail);                
               console.log("updateUser error: ", err.message);
               response.send({message: "Something BAD has happened! Try it again."});
               return;
             }
           });
+        } else {
+          response.send(loginUser);
+          return;
         }
     } else {
-      const event = eventType.create_user_fail;
-      recordLog("system", event);
-      console.log("something wrong with update");
-      response.send({message: "Error - UPDATE"});
-    }
+      console.log("result=", result);
+      // response.send({message: "OK"});
+      // return;
+      receivedUser.userActive = (receivedUser.userActive === "" || receivedUser.userActive == undefined || receivedUser.userActive == null) ?
+                                result.user_active : receivedUser.userActive;
+      receivedUser.userAdmin  = (receivedUser.userAdmin === "" || receivedUser.userAdmin == undefined || receivedUser.userAdmin == null) ?
+                                result.user_admin :
+                                receivedUser.userAdmin;
+      console.log("receivedUser ***", receivedUser)
+      pool.query(
+        'UPDATE users SET email = $1, name = $2, user_active = $3, user_admin = $4 WHERE id = $5 RETURNING id, email, name, user_active, user_admin',
+        [receivedUser.email, receivedUser.name, receivedUser.userActive, receivedUser.userAdmin, result.id],
+        (error, result) => {
+          try {
+            if (error) {
+              console.log(`updateUser error = ${error.message}`);
+              throw error;
+            }
+            const event = eventType.update_user_success;
+            const user = result.rows[0];
+            recordLog(user.email, event);
+            if ("adminEmail" in receivedUser)
+              recordLog(receivedUser.adminEmail, eventType.admin_change_user_data_success);
+            response.send(user);
+            return;
+          } catch (err) {
+            const event = eventType.update_user_fail;
+            recordLog(null, event);
+            if ("adminEmail" in receivedUser)
+              recordLog(receivedUser.adminEmail, eventType.admin_change_user_data_fail);
+            console.log("updateUser error: ", err.message);
+            response.send({message: "Something BAD has happened! Try it again."});
+            return;
+          }
+        });
+      }
+  } else {
+    const event = eventType.create_user_fail;
+    recordLog("system", event);
+    console.log("something wrong with update");
+    response.send({message: "Error - UPDATE"});
+  }
 }
 
 // actually this method deactivate the user by setting as false the field user_active
