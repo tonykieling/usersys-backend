@@ -50,6 +50,7 @@ checkUserByEmail= email => {
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 userQuery = user => {
   console.log("### inside userQuery");
+  console.log("user", user)
   return new Promise((res, rej) => {
     // the query can be replaced for checkUserByEmail
     // tryed but no success because it needs to be async.
@@ -161,11 +162,13 @@ updateUser = async (request, response) => {
   const result = await checkUserByEmail(receivedUser.email);
   if (result.id) {
     if ("newPassword" in receivedUser) {
-      const loginUser = (receivedUser.adminEmail) ? {email: receivedUser.adminEmail} : await userQuery(receivedUser);
+      const loginUser = await userQuery((receivedUser.adminEmail) ?
+                          { email: receivedUser.adminEmail, password: receivedUser.adminPassword } :
+                          receivedUser);
+console.log("loginUser", loginUser);
       if ("email" in loginUser) {
-        console.log({message: "newpassword"});
-        response.send({message: "OK"});
-        return;
+        // response.send({messagePassword: "OK"});
+        // return;
         pool.query(
           'UPDATE users SET password = $1 WHERE id = $2 RETURNING id, email, name, user_active, user_admin',
           [bcrypt.hashSync(receivedUser.newPassword, 10) , result.id],
@@ -180,6 +183,7 @@ updateUser = async (request, response) => {
               recordLog(user.email, event);
               if ("adminEmail" in receivedUser)
                 recordLog(receivedUser.adminEmail, eventType.admin_change_user_data_success);
+console.log("user-", user)                
               response.send(user);
               return;
             } catch (err) {
@@ -188,24 +192,20 @@ updateUser = async (request, response) => {
               if ("adminEmail" in receivedUser)
                 recordLog(receivedUser.adminEmail, eventType.admin_change_user_data_fail);                
               console.log("updateUser error: ", err.message);
-              response.send({message: "Something BAD has happened! Try it again."});
+              response.send({messagePassword: "Something BAD has happened! Try it again."});
               return;
             }
           });
         } else {
-          response.send(loginUser);
+          response.send({messagePassword: loginUser.message});
           return;
         }
     } else {
-      console.log("result=", result);
-      // response.send({message: "OK"});
-      // return;
       receivedUser.userActive = (receivedUser.userActive === "" || receivedUser.userActive == undefined || receivedUser.userActive == null) ?
                                 result.user_active : receivedUser.userActive;
       receivedUser.userAdmin  = (receivedUser.userAdmin === "" || receivedUser.userAdmin == undefined || receivedUser.userAdmin == null) ?
                                 result.user_admin :
                                 receivedUser.userAdmin;
-      console.log("receivedUser ***", receivedUser)
       pool.query(
         'UPDATE users SET email = $1, name = $2, user_active = $3, user_admin = $4 WHERE id = $5 RETURNING id, email, name, user_active, user_admin',
         [receivedUser.email, receivedUser.name, receivedUser.userActive, receivedUser.userAdmin, result.id],
