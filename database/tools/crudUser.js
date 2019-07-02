@@ -50,7 +50,6 @@ checkUserByEmail= email => {
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 userQuery = user => {
   console.log("### inside userQuery");
-  console.log("user", user)
   return new Promise((res, rej) => {
     // the query can be replaced for checkUserByEmail
     // tryed but no success because it needs to be async.
@@ -67,11 +66,11 @@ userQuery = user => {
             const event = eventType.login_success;
             recordLog(user.email, event);
             res({
-              id: userFromQuery.id,
-              email: userFromQuery.email,
-              name: userFromQuery.name,
-              userActive: userFromQuery.user_active,
-              userAdmin: userFromQuery.user_admin
+              id          : userFromQuery.id,
+              email       : userFromQuery.email,
+              name        : userFromQuery.name,
+              userActive  : userFromQuery.user_active,
+              userAdmin   : userFromQuery.user_admin
             });
           } else {
             const event = eventType.login_fail;
@@ -158,17 +157,13 @@ updateUser = async (request, response) => {
   console.log("### inside updateUser");
   // const { id, email, name, actualEmail, user_active, user_admin } = request.body;
   const receivedUser = request.body;
-  console.log("receivedUser", receivedUser);
   const result = await checkUserByEmail(receivedUser.email);
   if (result.id) {
     if ("newPassword" in receivedUser) {
       const loginUser = await userQuery((receivedUser.adminEmail) ?
                           { email: receivedUser.adminEmail, password: receivedUser.adminPassword } :
                           receivedUser);
-console.log("loginUser", loginUser);
       if ("email" in loginUser) {
-        // response.send({messagePassword: "OK"});
-        // return;
         pool.query(
           'UPDATE users SET password = $1 WHERE id = $2 RETURNING id, email, name, user_active, user_admin',
           [bcrypt.hashSync(receivedUser.newPassword, 10) , result.id],
@@ -183,7 +178,6 @@ console.log("loginUser", loginUser);
               recordLog(user.email, event);
               if ("adminEmail" in receivedUser)
                 recordLog(receivedUser.adminEmail, eventType.admin_change_user_data_success);
-console.log("user-", user)                
               response.send(user);
               return;
             } catch (err) {
