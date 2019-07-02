@@ -137,7 +137,7 @@ changePermission = async (request, response) => {
   // console.log('after check USER email > checkedUser:', checkedUser, "action: ", action)
   if (((action.toLowerCase() === "grant") && checkedUser.user_admin) ||
       ((action.toLowerCase() === "seize") && (!checkedUser.user_admin))) {
-        response.send({message: "User has already have the required permission"});
+        response.send({message: "User has already had the required permission"});
         return;
       }
   // verifies if MESSAGE attribute is inside the response object
