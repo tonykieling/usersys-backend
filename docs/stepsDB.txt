@@ -5,6 +5,28 @@
 # psql -d postgres -U usersys;  
 # CREATE DATABASE usersys;  
 # \c usersys  
+
+
+# knex migrate:latest   // to create the tables
+# knex seed:run   // starting populating the tables
+
+
+
+\c | Connect to a new database
+\dt | List all tables
+\du | List all roles
+\list | List databases
+
+
+
+
+
+
+
+
+#################################################################
+OLD STUFF:
+
 # CREATE TABLE users (  
   ID SERIAL PRIMARY KEY,  
   name VARCHAR(40),  
@@ -23,12 +45,3 @@ VALUES ('bob', 'bob@email.com', TRUE), ('sue','sue@email.com', FALSE);
   date_time TIMESTAMP,  
   event VARCHAR(70)  
 );  
-
-\c | Connect to a new database
-\dt | List all tables
-\du | List all roles
-\list | List databases
-
-
-# knex migrate:latest   // to create the tables
-# knex seed:run   // starting populating the tables
