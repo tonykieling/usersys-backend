@@ -157,7 +157,9 @@ updateUser = async (request, response) => {
   console.log("### inside updateUser");
   // const { id, email, name, actualEmail, user_active, user_admin } = request.body;
   const receivedUser = request.body;
-  const result = await checkUserByEmail(receivedUser.email);
+  const result = await checkUserByEmail((receivedUser.actualEmail) ?
+                    receivedUser.actualEmail :
+                    receivedUser.email);
   if (result.id) {
     if ("newPassword" in receivedUser) {
       const loginUser = await userQuery((receivedUser.adminEmail) ?
