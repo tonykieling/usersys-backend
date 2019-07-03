@@ -75,12 +75,12 @@ userQuery = user => {
           } else {
             const event = eventType.login_fail;
             recordLog(user.email, event);
-            res({message: "user/password wrong!"});
+            res({message: "user/password is wrong!"});
           }
         } else {
           const event = eventType.login_fail;
           recordLog(user.email, event);
-          res({message: "### user/password wrong!"});
+          res({message: "### user/password is wrong!"});
         }
       } catch (err) {
         console.log("userQuery error: ", err.message);
@@ -91,7 +91,6 @@ userQuery = user => {
     });
   });
 }
-
 
 
 // login method
@@ -162,6 +161,7 @@ updateUser = async (request, response) => {
                     receivedUser.email);
   if (result.id) {
     if ("newPassword" in receivedUser) {
+console.log("receivedUser", receivedUser);
       const loginUser = await userQuery((receivedUser.adminEmail) ?
                           { email: receivedUser.adminEmail, password: receivedUser.adminPassword } :
                           receivedUser);
