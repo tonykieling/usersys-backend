@@ -29,11 +29,12 @@ OLD STUFF:
 
 # CREATE TABLE users (  
   ID SERIAL PRIMARY KEY,  
-  name VARCHAR(40),  
-  email VARCHAR(40), 
+  name VARCHAR(60),  
+  email VARCHAR(60), 
   password VARCHAR(60), 
   user_active BOOL,
-  user_admin BOOL
+  user_admin BOOL,
+  createted_at TIMESTAMP,
 );  
 
 # INSERT INTO users (name, email, user_admin)  
@@ -41,7 +42,7 @@ VALUES ('bob', 'bob@email.com', TRUE), ('sue','sue@email.com', FALSE);
 
 # CREATE TABLE logs (  
   ID SERIAL PRIMARY KEY,  
-  userID VARCHAR(40),  
-  date_time TIMESTAMP,  
+  userID VARCHAR(60),  
+  createted_at TIMESTAMP,  
   event VARCHAR(70)  
 );  
