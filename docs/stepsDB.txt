@@ -2,7 +2,7 @@
 # CREATE ROLE usersys WITH LOGIN PASSWORD 'usersys';  
 # ALTER ROLE usersys CREATEDB; // it allows the role usersys creates a db  
 # <logout>  
-# psql -d postgres -U usersys;  
+# psql -d postgres -U usersys  
 # CREATE DATABASE usersys;  
 # \c usersys  
 
