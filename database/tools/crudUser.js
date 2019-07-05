@@ -61,7 +61,12 @@ userQuery = user => {
           throw error;
         }
         if (result.rowCount > 0) {
+          ////////////////////////////////
+          // check whether user_active !== false
+          ////////////////////////////////
           const userFromQuery = result.rows[0];
+
+
           if(bcrypt.compareSync(user.password, userFromQuery.password)){
             const event = eventType.login_success;
             recordLog(user.email, event);
