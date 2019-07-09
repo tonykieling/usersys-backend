@@ -3,7 +3,8 @@ const bodyParser = require('body-parser');
 const { createUser,
         updateUser,
         deleteUser,
-        login } = require('./database/tools/crudUser.js');
+        login,
+        userPicture } = require('./database/tools/crudUser.js');
 
 const { allLogs,
         logPerUser,
@@ -17,6 +18,9 @@ const { changePermission,
 const cors = require('cors');
 const app = express();
 const PORT = 3333;
+
+app.use(bodyParser.json()); 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 // const cookieSession = require('cookie-session');
@@ -75,6 +79,7 @@ app.post('/user/new', createUser);
 // it receives email as the user identification
 // it return user (id, name, email, user_active, user_admin) OR a fail message
 app.put("/user", updateUser);
+app.put("/user/picture", userPicture);
 
 // it deletes (actually deactivate) the user
 // it receives email as the user identification

@@ -24,7 +24,9 @@ const eventType = {
   listUser_success                : "23- Admin listed users with SUCCESS",
   listUser_fail                   : "24- Admin listed users with FAIL",
   admin_change_user_data_success  : "25- Admin change user data success",
-  admin_change_user_data_fail     : "26- Admin change user data fail"
+  admin_change_user_data_fail     : "26- Admin change user data fail",
+  user_picture_changed_success    : "27- User changed picture with SUCCESS",
+  user_picture_changed_fail       : "28- User changed picture with FAIL"
 }
 
 module.exports = eventType;

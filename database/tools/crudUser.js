@@ -2,6 +2,15 @@ const { recordLog } = require('./crudLogs.js');
 const eventType = require('./eventType.js');
 const bcrypt = require('bcrypt');
 
+// const path = process.env.PWD;
+const path = "/home/tonyk/dev/user_project/user_project-frontend/src/img";
+const multer = require('multer');
+
+
+
+
+
+
 const Pool = require('pg').Pool;
 
 const pool = new Pool({
@@ -68,23 +77,24 @@ userQuery = user => {
 
 
           if(bcrypt.compareSync(user.password, userFromQuery.password)){
-            const event = eventType.login_success;
-            recordLog(user.email, event);
+            // const event = eventType.login_success;
+            // recordLog(user.email, event);
             res({
-              id          : userFromQuery.id,
-              email       : userFromQuery.email,
-              name        : userFromQuery.name,
-              userActive  : userFromQuery.user_active,
-              userAdmin   : userFromQuery.user_admin
+              id            : userFromQuery.id,
+              email         : userFromQuery.email,
+              name          : userFromQuery.name,
+              picture_name  : userFromQuery.picture_name,
+              userActive    : userFromQuery.user_active,
+              userAdmin     : userFromQuery.user_admin
             });
           } else {
-            const event = eventType.login_fail;
-            recordLog(user.email, event);
+            // const event = eventType.login_fail;
+            // recordLog(user.email, event);
             res({message: "user/password is wrong!"});
           }
         } else {
-          const event = eventType.login_fail;
-          recordLog(user.email, event);
+          // const event = eventType.login_fail;
+          // recordLog(user.email, event);
           res({message: "### user/password is wrong!"});
         }
       } catch (err) {
@@ -159,6 +169,7 @@ createUser = async (request, response) => {
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 updateUser = async (request, response) => {
   console.log("### inside updateUser");
+  console.log(req.body)
   // const { id, email, name, actualEmail, user_active, user_admin } = request.body;
   const receivedUser = request.body;
   const result = await checkUserByEmail((receivedUser.actualEmail) ?
@@ -166,7 +177,6 @@ updateUser = async (request, response) => {
                     receivedUser.email);
   if (result.id) {
     if ("newPassword" in receivedUser) {
-console.log("receivedUser", receivedUser);
       const loginUser = await userQuery((receivedUser.adminEmail) ?
                           { email: receivedUser.adminEmail, password: receivedUser.adminPassword } :
                           receivedUser);
@@ -242,6 +252,58 @@ console.log("receivedUser", receivedUser);
   }
 }
 
+userPicture = async(request, response) => {
+  console.log("### inside userPicture");
+  console.log("path", `${path}`);
+  // response.send({message : "OK"});
+  // return;
+  let pictureName = "";
+  let id = 0;
+  let storage = multer.diskStorage({
+    destination: (request, file, cb) => {
+      cb(null, path);
+    },
+    filename: (request, file, cb) => {  
+      id = request.body.id;
+      pictureName = `IMG-${request.body.name}_${request.body.id}.jpg`;
+      cb(null, pictureName);
+    }
+  });
+  
+  let upload = multer({ storage: storage }).single('file');
+  
+  await upload(request, response, err => {
+    if (err instanceof multer.MulterError){
+      console.log(err.message);
+      return response.status(500).json(err)
+    }
+    else if (err) {
+      console.log(err);
+      return response.status(500).json(err);
+    }
+    console.log("pictureName", pictureName);
+    pool.query('UPDATE users set picture_name = $1 WHERE id = $2 RETURNING picture_name', [pictureName, id],(error, result) => {
+      try {
+        if (error) {
+          console.log(`pictureUser error = ${error.message}`);
+          throw error;
+        } else {
+          console.log("+++result", result.rows[0]);
+          const event = eventType.user_picture_changed_success;
+          recordLog(pictureName, event);
+          response.send({pictureName});
+        }
+      } catch (err) {
+        console.log(`Error pictureUser: `, err.message);
+        const event = eventType.user_picture_changed_success;
+        recordLog(pictureName, event);
+        response.send({message: "pictureUser Error"});
+      }
+    });
+  });
+}
+
+
 // actually this method deactivate the user by setting as false the field user_active
 // it only is performed by admin users
 // it receives user's email
@@ -282,5 +344,6 @@ module.exports = {
   login,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  userPicture
 };
