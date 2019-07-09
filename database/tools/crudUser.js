@@ -3,13 +3,7 @@ const eventType = require('./eventType.js');
 const bcrypt = require('bcrypt');
 
 // const path = process.env.PWD;
-const path = "/home/tonyk/dev/user_project/user_project-frontend/src/img";
 const multer = require('multer');
-
-
-
-
-
 
 const Pool = require('pg').Pool;
 
@@ -80,12 +74,12 @@ userQuery = user => {
             // const event = eventType.login_success;
             // recordLog(user.email, event);
             res({
-              id            : userFromQuery.id,
-              email         : userFromQuery.email,
-              name          : userFromQuery.name,
-              picture_name  : userFromQuery.picture_name,
-              userActive    : userFromQuery.user_active,
-              userAdmin     : userFromQuery.user_admin
+              id           : userFromQuery.id,
+              email        : userFromQuery.email,
+              name         : userFromQuery.name,
+              pictureName  : userFromQuery.picture_name,
+              userActive   : userFromQuery.user_active,
+              userAdmin    : userFromQuery.user_admin
             });
           } else {
             // const event = eventType.login_fail;
@@ -252,11 +246,13 @@ updateUser = async (request, response) => {
   }
 }
 
+
+/*
+// method responsable to write in the database the name of the user's picture
+*/
 userPicture = async(request, response) => {
   console.log("### inside userPicture");
-  console.log("path", `${path}`);
-  // response.send({message : "OK"});
-  // return;
+  const path = "/home/tonyk/dev/user_project/user_project-frontend/src/img";
   let pictureName = "";
   let id = 0;
   let storage = multer.diskStorage({
@@ -288,7 +284,6 @@ userPicture = async(request, response) => {
           console.log(`pictureUser error = ${error.message}`);
           throw error;
         } else {
-          console.log("+++result", result.rows[0]);
           const event = eventType.user_picture_changed_success;
           recordLog(pictureName, event);
           response.send({pictureName});
