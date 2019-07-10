@@ -136,8 +136,8 @@ createUser = async (request, response) => {
     return;
   }
 
-  pool.query('INSERT INTO users (email, name, password, user_active, user_admin) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, user_active, user_admin',
-    [email, name, bcrypt.hashSync(password, 10), true, false], (error, result) => {
+  pool.query('INSERT INTO users (email, name, password, user_active, user_admin, user_picture) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, name, email, user_active, user_admin',
+    [email, name, bcrypt.hashSync(password, 10), true, false, "defaultPicture.jpg"], (error, result) => {
       try {
         if (error) {
           console.log(`createUser error = ${error.message}`);
