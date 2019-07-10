@@ -163,7 +163,7 @@ createUser = async (request, response) => {
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 updateUser = async (request, response) => {
   console.log("### inside updateUser");
-  console.log(req.body)
+  console.log(request.body);
   // const { id, email, name, actualEmail, user_active, user_admin } = request.body;
   const receivedUser = request.body;
   const result = await checkUserByEmail((receivedUser.actualEmail) ?
