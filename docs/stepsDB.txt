@@ -1,10 +1,10 @@
-# psql  
-# CREATE ROLE usersys WITH LOGIN PASSWORD 'usersys';  
-# ALTER ROLE usersys CREATEDB; // it allows the role usersys creates a db  
-# <logout>  
-# psql -d postgres -U usersys  
-# CREATE DATABASE usersys;  
-# \c usersys  
+# psql
+# CREATE ROLE usersys WITH LOGIN PASSWORD 'usersys';
+# ALTER ROLE usersys CREATEDB; // it allows the role usersys creates a db
+# <logout>
+# psql -d postgres -U usersys
+# CREATE DATABASE usersys;
+# \c usersys
 
 
 # knex migrate:latest   // to create the tables
@@ -19,7 +19,7 @@
 
 
 
-
+rod@ ~/projects/user_project-backend > ./node_modules/.bin/knex migrate:latest
 
 
 
@@ -27,22 +27,22 @@
 #################################################################
 OLD STUFF:
 
-# CREATE TABLE users (  
-  ID SERIAL PRIMARY KEY,  
-  name VARCHAR(60),  
-  email VARCHAR(60), 
-  password VARCHAR(60), 
+# CREATE TABLE users (
+  ID SERIAL PRIMARY KEY,
+  name VARCHAR(60),
+  email VARCHAR(60),
+  password VARCHAR(60),
   user_active BOOL,
   user_admin BOOL,
   createted_at TIMESTAMP,
-);  
+);
 
-# INSERT INTO users (name, email, user_admin)  
-VALUES ('bob', 'bob@email.com', TRUE), ('sue','sue@email.com', FALSE);  
+# INSERT INTO users (name, email, user_admin)
+VALUES ('bob', 'bob@email.com', TRUE), ('sue','sue@email.com', FALSE);
 
-# CREATE TABLE logs (  
-  ID SERIAL PRIMARY KEY,  
-  userID VARCHAR(60),  
-  createted_at TIMESTAMP,  
-  event VARCHAR(70)  
-);  
+# CREATE TABLE logs (
+  ID SERIAL PRIMARY KEY,
+  userID VARCHAR(60),
+  createted_at TIMESTAMP,
+  event VARCHAR(70)
+);
