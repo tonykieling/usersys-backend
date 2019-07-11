@@ -144,7 +144,7 @@ changePermission = async (request, response) => {
   // if there is a message than return ERROR MESSAGE
   if ( 'message' in checkedUser){
     console.log("1) something wrong with update");
-    response.send({message: "Something wrong with Seize Admin's permission. Try it again."});
+    response.send({message: "Something wrong with this user's email. Try it again."});
     return;
   } else {
       // 2. login > checks if admin password is valid to authorize the modification
@@ -153,7 +153,7 @@ changePermission = async (request, response) => {
       if (('message' in checkAdmin) || (!checkAdmin.userAdmin)){
         const event = eventType.changePermission_fail;
         recordLog(adminEmail, event);
-        response.send({message: "Admin permission with problem. Try it again."});
+        response.send({message: "Admin's password with problem. Try it again."});
         return;
       }
       else {

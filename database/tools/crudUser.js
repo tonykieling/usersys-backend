@@ -64,15 +64,12 @@ userQuery = user => {
           throw error;
         }
         if (result.rowCount > 0) {
-          ////////////////////////////////
-          // check whether user_active !== false
-          ////////////////////////////////
           const userFromQuery = result.rows[0];
 
+          if (!userFromQuery.user_active)
+            res({message: "User is no longer active!"});
 
           if(bcrypt.compareSync(user.password, userFromQuery.password)){
-            // const event = eventType.login_success;
-            // recordLog(user.email, event);
             res({
               id           : userFromQuery.id,
               email        : userFromQuery.email,
@@ -82,14 +79,10 @@ userQuery = user => {
               userAdmin    : userFromQuery.user_admin
             });
           } else {
-            // const event = eventType.login_fail;
-            // recordLog(user.email, event);
             res({message: "user/password is wrong!"});
           }
         } else {
-          // const event = eventType.login_fail;
-          // recordLog(user.email, event);
-          res({message: "### user/password is wrong!"});
+          res({message: "#user/password is wrong!"});
         }
       } catch (err) {
         console.log("userQuery error: ", err.message);
