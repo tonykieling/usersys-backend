@@ -22,8 +22,8 @@
  **@How to install:**  
 *p.s. After running the steps below, please go to https://github.com/tonykieling/usersys-frontend and install the frontend part.*  
 
- 1. Within a directory called usersys, run  
- `# git clone git@github.com:tonykieling/usersys-backend.git .`
+ 1. Within a directory called 'usersys', run  
+ `# git clone git@github.com:tonykieling/usersys-backend.git`
  2. `# npm i`  
  3. Database (postgres) needs a role, a database and a password equal to 'usersys'. The commands to have those things:  
 `# psql`  
@@ -38,10 +38,11 @@
 The actions above is gonna create the database structure and gives some users and starts populating logs table, as well.  
 For example, the user bob@email.com, password 'bob' is admin and kiko@email.com/'kiko' is a normal one.  
 
- *p.s. back-end structure files is supossed to be placed in a directory called `usersys-backend`, which should be inside `usersys`.  
-i.e. **'any_user_place/usersys/usersys-backend'** *
-
  5. `# node server.js`  
+
+ *p.s. back-end structure files is supossed to be placed in a directory called 'usersys-backend', which should be inside 'usersys'.*  
+*i.e. **'any_user_place/usersys/usersys-backend'***
+
  
 **@Dependencies**
 1. express  
