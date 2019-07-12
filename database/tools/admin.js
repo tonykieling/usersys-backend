@@ -144,7 +144,7 @@ changePermission = async (request, response) => {
   // if there is a message than return ERROR MESSAGE
   if ( 'message' in checkedUser){
     console.log("1) something wrong with update");
-    response.send({message: "Something wrong with Seize Admin's permission. Try it again."});
+    response.send({message: "Something wrong with this user's email. Try it again."});
     return;
   } else {
       // 2. login > checks if admin password is valid to authorize the modification
@@ -153,7 +153,7 @@ changePermission = async (request, response) => {
       if (('message' in checkAdmin) || (!checkAdmin.userAdmin)){
         const event = eventType.changePermission_fail;
         recordLog(adminEmail, event);
-        response.send({message: "Admin permission with problem. Try it again."});
+        response.send({message: "Admin's password with problem. Try it again."});
         return;
       }
       else {
@@ -199,12 +199,10 @@ listUsers = (request, response) => {
   console.log("data:", data);
   let dataQuery = "";
   if (!data.userType) {
-    console.log("query no userType");
     const userParam = (data.user) ?
       ` WHERE name = '${data.user}' OR email = '${data.user}' OR name LIKE '%${data.user}%' OR email LIKE '%${data.user}%'` :
       "";
-    dataQuery = `SELECT id, name, email, user_active, user_admin FROM users ${userParam} ORDER BY id`;
-    console.log("dataQuery", dataQuery)
+    dataQuery = `SELECT id, name, email, picture_name, user_active, user_admin FROM users ${userParam} ORDER BY id`;
   } else {
     let typeParam = "";
     if (data.userType === "admin")
@@ -215,7 +213,6 @@ listUsers = (request, response) => {
       ` AND (name = '${data.user}' OR email = '${data.user}' OR name LIKE '%${data.user}%' OR email LIKE '%${data.user}%')` :
       "";
     dataQuery = `SELECT id, name, email, user_active, user_admin FROM users ${typeParam} ${userParam} ORDER BY id`;
-    console.log("querying for ADMIN = ", dataQuery);
   }
 
   pool.query(dataQuery, [], (error, result) => {
@@ -226,7 +223,6 @@ listUsers = (request, response) => {
       if (result.rowCount > 0) {
         const event = eventType.listUser_success;
         recordLog(data.userAdmin, event);
-        console.log(result.rows)
         response.send(result.rows);
         return;
       } else {
