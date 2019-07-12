@@ -2,14 +2,15 @@
   "name": "usersys",
   "version": "1.0.0",
   "description": "About:  User project will handle with actions related to the user, such as:",
-  "main": "index.js",
+  "main": "server.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
+    "start": "",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently \"npm run server\" \"cd ../usersys-frontend && npm run start\"",
-    "server": "nodemon index.js"
+    "server": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -30,7 +31,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
-    "knex": "^0.17.6",
+    "knex": "^0.19.0",
     "multer": "^1.4.1",
     "node-fetch": "^2.6.0",
     "pg": "^7.11.0"

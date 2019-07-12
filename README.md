@@ -6,31 +6,33 @@
 
 #### Normal User  
  1. Register
- 2. Login
- 3. Logout
- 4. Data user change
+ 2. Login / Logout
+ 3. Change user's Data, password and picture  
  
 #### Admin User
  1. Register
- 2. Login
- 3. Logout
- 4. Data user change
- 5. Grant/Seize Admin permission
- 6. Check logs created by the users actions
+ 2. Login / Logout
+ 3. Change Admin's Data, password and picture
+ 4. List users
+ 5. Grant / Seize Admin permission to other users
+ 6. Change users' Data and password
+ 7. Check logs created by the users actions
   
   
  **@How to install:**  
-*p.s. These actions are regarding to the server side.  
-After running the steps below, please go to https://github.com/tonykieling/usersys-frontend and install the frontend part.*
- 1. `# npm i`  
- 2. Database (postgres) needs a role, a database and a password equal to 'usersys'. The commands to have those things:  
+*p.s. After running the steps below, please go to https://github.com/tonykieling/usersys-frontend and install the frontend part.*  
+
+ 1. Within a directory called usersys, run  
+ `# git clone git@github.com:tonykieling/usersys-backend.git .`
+ 2. `# npm i`  
+ 3. Database (postgres) needs a role, a database and a password equal to 'usersys'. The commands to have those things:  
 `# psql`  
 `# CREATE ROLE usersys WITH LOGIN PASSWORD 'usersys';`  
 `# ALTER ROLE usersys CREATEDB; // it allows the role usersys creates a db`  
 `# <logout>`  
 `# psql -d postgres -U usersys`  
 `# CREATE DATABASE usersys;`  
- 3. Create the tables and populate them by using knex:  
+ 4. Create the tables and populate them by using knex:  
 `# knex migrate:latest   // creates the tables`  
 `# knex seed:run   // starts populating the tables`  
 The actions above is gonna create the database structure and gives some users and starts populating logs table, as well.  
@@ -39,7 +41,7 @@ For example, the user bob@email.com, password 'bob' is admin and kiko@email.com/
  *p.s. back-end structure files is supossed to be placed in a directory called `usersys-backend`, which should be inside `usersys`.  
 i.e. **'any_user_place/usersys/usersys-backend'** *
 
- 4. `# node server.js`  
+ 5. `# node server.js`  
  
 **@Dependencies**
 1. express  
