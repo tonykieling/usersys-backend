@@ -20,6 +20,7 @@
 
 
 rod@ ~/projects/user_project-backend > ./node_modules/.bin/knex migrate:latest
+rod@ ~/projects/user_project-backend > ./node_modules/.bin/knex seed:run
 
 
 
