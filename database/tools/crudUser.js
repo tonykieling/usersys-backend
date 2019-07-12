@@ -2,7 +2,6 @@ const { recordLog } = require('./crudLogs.js');
 const eventType = require('./eventType.js');
 const bcrypt = require('bcrypt');
 
-const backPath = process.env.PWD;
 const multer = require('multer');
 
 const Pool = require('pg').Pool;
@@ -100,7 +99,6 @@ userQuery = user => {
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 login = async (request, response) => {
   console.log("### inside login method");
-  console.log("path", backPath);
   const receivedUser = request.body;
   const result = await userQuery(receivedUser);
   if (result.id) {
@@ -246,9 +244,9 @@ updateUser = async (request, response) => {
 */
 userPicture = async(request, response) => {
   console.log("### inside userPicture");
-  // const path = "/home/tonyk/dev/user_project/user_project-frontend/src/img";
-  const path = "../user_project-frontend/src/img";
-  console.log("path", path);
+
+  // path to record the picture
+  const path = "../usersys-frontend/src/img";
   let pictureName = "";
   let id = 0;
   let storage = multer.diskStorage({
