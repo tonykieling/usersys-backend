@@ -19,6 +19,7 @@ const pool = new Pool({
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 checkUserByEmail= email => {
   console.log("### inside checkuserbyemail");
+  console.log
   return new Promise((res, rej) => {
     pool.query('SELECT * FROM users WHERE email = $1', [email], (error, result) => {
       try {
@@ -118,6 +119,7 @@ login = async (request, response) => {
 createUser = async (request, response) => {
   console.log("### inside createUser");
   const receivedUser = request.body;
+  console.log(receivedUser, receivedUser);
   const { name, email, password } = receivedUser;
 
   const result = await checkUserByEmail(email);
@@ -128,7 +130,7 @@ createUser = async (request, response) => {
     return;
   }
 
-  pool.query('INSERT INTO users (email, name, password, user_active, user_admin, user_picture) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, name, email, user_active, user_admin',
+  pool.query('INSERT INTO users (email, name, password, user_active, user_admin, picture_name) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, name, email, user_active, user_admin, picture_name',
     [email, name, bcrypt.hashSync(password, 10), true, false, "defaultPicture.jpg"], (error, result) => {
       try {
         if (error) {
