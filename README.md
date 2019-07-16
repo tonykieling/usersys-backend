@@ -26,11 +26,11 @@
  `# git clone git@github.com:tonykieling/usersys-backend.git`
  2. `# npm i`  
  3. Database (postgres) needs a role, a database and a password equal to 'usersys'. The commands to have those things:  
-`# psql`  
+`$ psql`  
 `# CREATE ROLE usersys WITH LOGIN PASSWORD 'usersys';`  
-`# ALTER ROLE usersys CREATEDB; // it allows the role usersys creates a db`  
+`# ALTER ROLE usersys CREATEDB;`  
 `# <logout>`  
-`# psql -d postgres -U usersys`  
+`$ psql -d postgres -U usersys`  
 `# CREATE DATABASE usersys;`  
  4. Create the tables and populate them by using knex:  
 `# knex migrate:latest   // creates the tables`  
