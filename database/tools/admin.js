@@ -212,7 +212,7 @@ listUsers = (request, response) => {
     const userParam = (data.user) ?
       ` AND (name = '${data.user}' OR email = '${data.user}' OR name LIKE '%${data.user}%' OR email LIKE '%${data.user}%')` :
       "";
-    dataQuery = `SELECT id, name, email, user_active, user_admin FROM users ${typeParam} ${userParam} ORDER BY id`;
+    dataQuery = `SELECT id, name, email, picture_name, user_active, user_admin FROM users ${typeParam} ${userParam} ORDER BY id`;
   }
 
   pool.query(dataQuery, [], (error, result) => {
