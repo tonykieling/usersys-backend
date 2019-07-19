@@ -1,0 +1,22 @@
+create heroku account
+install heroku locally
+
+# heroku login (inside the app directory)
+create an app inside heroku
+follow the directions on "Deploy" tab, which basically says to:
+# heroku git:clone -a <nameofyourapp>
+after that, git add  and git commit normally and
+# git push heroku master -> it will deploy your app
+go to heroku dashboard and run the app
+
+create a file called 'Procfile wich will tell heroku what to do. Inside this file write down: `web: node server.js`
+
+the front end have to be wrapped and hold in public directory inside the app main directory
+# npm run build -> it will create a directory called build, inside frontend structure
+copy the content of build (frontend) to public (backend)
+the server app should be prepared in order to recognize that react is running by:
+`
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, './public', 'index.html'))
+});
+`

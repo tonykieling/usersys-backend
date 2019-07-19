@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express');
 const bodyParser = require('body-parser');
 const { createUser,
@@ -18,6 +19,8 @@ const { changePermission,
 const cors = require('cors');
 const app = express();
 const PORT = 3333;
+
+app.use(express.static('public'))
 
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -126,6 +129,11 @@ app.post('/admin/searchdate', searchDate);
 
 // method to list users and admins
 app.post('/admin/listUsers', listUsers);
+
+// pass these routes to your front end
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, './public', 'index.html'))
+});
 
 
 app.listen(PORT, () => console.log(`Service "USER CONTROL SYSTEM" running on port ${PORT}`));
