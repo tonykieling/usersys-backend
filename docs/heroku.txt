@@ -7,9 +7,9 @@ follow the directions on "Deploy" tab, which basically says to:
 # heroku git:clone -a <nameofyourapp>
 after that, git add  and git commit normally and
 # git push heroku master -> it will deploy your app
+create a file called 'Procfile wich will tell heroku what to do. Inside this file write down: `web: node server.js`
 go to heroku dashboard and run the app
 
-create a file called 'Procfile wich will tell heroku what to do. Inside this file write down: `web: node server.js`
 
 the front end have to be wrapped and hold in public directory inside the app main directory
 # npm run build -> it will create a directory called build, inside frontend structure
