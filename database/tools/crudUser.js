@@ -254,7 +254,7 @@ userPicture = async(request, response) => {
   console.log("### inside userPicture");
 
   // path to record the picture
-  const path = "./public/IMG";
+  const path = "./public/IMG/";
   let pictureName = "";
   let id = 0;
   let storage = multer.diskStorage({
