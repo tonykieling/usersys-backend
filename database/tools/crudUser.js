@@ -1,3 +1,4 @@
+const path = require("path");
 const { recordLog } = require('./crudLogs.js');
 const eventType = require('./eventType.js');
 const bcrypt = require('bcrypt');
@@ -254,12 +255,12 @@ userPicture = async(request, response) => {
   console.log("### inside userPicture");
 
   // path to record the picture
-  const path = "../../public/IMG/";
+  // const path = "../../public/IMG/";
   let pictureName = "";
   let id = 0;
   let storage = multer.diskStorage({
     destination: (request, file, cb) => {
-      cb(null, path);
+      cb(null, path.join(__dirname, "public/IMG"));
     },
     filename: (request, file, cb) => {  
       id = request.body.id;
@@ -273,11 +274,13 @@ userPicture = async(request, response) => {
   await upload(request, response, err => {
     if (err instanceof multer.MulterError){
       console.log(err.message);
-      return response.status(500).json(err)
+      // return response.status(500).json(err)
+      return response.status(500).send({message : err.message});
     }
     else if (err) {
       console.log(err);
-      return response.status(500).json(err);
+      // return response.status(500).json(err);
+      return response.status(500).send({message : err.message});
     }
     console.log("pictureName", pictureName);
     pool.query('UPDATE users set picture_name = $1 WHERE id = $2 RETURNING picture_name', [pictureName, id],(error, result) => {
