@@ -27,6 +27,6 @@ app.get('*', (req, res) => {
 add heroku postgres
 
 heroku pg:psql
-cretae tables
+create tables
 
 

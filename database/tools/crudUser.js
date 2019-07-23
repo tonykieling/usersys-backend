@@ -6,12 +6,19 @@ const multer = require('multer');
 
 const Pool = require('pg').Pool;
 
+// const pool = new Pool({
+//   user      : 'usersys',
+//   host      : 'localhost',
+//   database  : 'usersys',
+//   password  : 'usersys',
+//   port      : 5432,
+// });
 const pool = new Pool({
-  user      : 'usersys',
-  host      : 'localhost',
-  database  : 'usersys',
-  password  : 'usersys',
-  port      : 5432,
+  user      : 'ibqkjiuxxuqhms',
+  host      : 'ec2-54-243-193-59.compute-1.amazonaws.com',
+  database  : 'dchkh0dugp1v3a',
+  password  : '4a19911831f37df6faf2a6138451c4266df1af9f41cedb7a450ec5ed1f2a4d3f',
+  port      : 5432
 });
 
 // auxiliary function to check whether the user (EMAIL) exists in the database
@@ -19,7 +26,6 @@ const pool = new Pool({
 // it returns an object either {id, name, email, user_admin, user_active} OR message (if it fails)
 checkUserByEmail= email => {
   console.log("### inside checkuserbyemail");
-  console.log
   return new Promise((res, rej) => {
     pool.query('SELECT * FROM users WHERE email = $1', [email], (error, result) => {
       try {
