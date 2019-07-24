@@ -260,7 +260,7 @@ userPicture = async(request, response) => {
   let id = 0;
   let storage = multer.diskStorage({
     destination: (request, file, cb) => {
-      cb(null, "../../public/IMG");
+      cb(null, path.resolve("public/IMG"));
     },
     filename: (request, file, cb) => {  
       id = request.body.id;
